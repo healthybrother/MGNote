@@ -3,13 +3,10 @@ package com.mgnote.mgnote.model;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 @Document(collection = "note")
@@ -24,7 +21,7 @@ public class Note {
     private String description;
 
     @JsonIgnore
-    private boolean deleted;
+    private Boolean deleted;
 
     private Date createdAt;
 
@@ -39,6 +36,10 @@ public class Note {
     private Boolean isPublic;
 
     public Note() {
+        this.updatedAt = new Date();
+        this.createdAt = new Date();
+        this.deleted = false;
+        this.isPublic = false;
     }
 
     public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNote prevNote, BriefUser userInfo, Boolean isPublic) {
@@ -145,7 +146,7 @@ public class Note {
      *
      * @return the deleted
      */
-    public boolean isDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 
@@ -154,7 +155,7 @@ public class Note {
      *
      * @param deleted the deleted to set
      */
-    public void setDeleted(final boolean deleted) {
+    public void setDeleted(final Boolean deleted) {
         this.deleted = deleted;
     }
 

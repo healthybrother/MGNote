@@ -14,6 +14,18 @@ public class ResponseValue <T>{
     public ResponseValue() {
     }
 
+    public static <T> ResponseValue<T> success(){
+        return new ResponseValue<>(200, "success", null);
+    }
+
+    public static <T> ResponseValue<T> success(T payload){
+        return new ResponseValue<>(200, "success", payload);
+    }
+
+    public static <T> ResponseValue<T> fail(T payload){
+        return new ResponseValue<>(300, "fail", payload);
+    }
+
     public Integer getCode() {
         return code;
     }
