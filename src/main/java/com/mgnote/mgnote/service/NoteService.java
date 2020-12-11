@@ -3,6 +3,8 @@ package com.mgnote.mgnote.service;
 import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.Note;
 
+import java.util.List;
+
 public interface NoteService {
 
     /**
@@ -32,6 +34,4 @@ public interface NoteService {
      * @param noteId 笔记信息的id
      */
     void deleteNoteSoft(String noteId);
-
-
 }
