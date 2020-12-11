@@ -1,24 +1,24 @@
 package com.mgnote.mgnote.model;
 
-public class Friend {
+public class BriefUser {
     private String userId;
     private String userName;
     private String mail;
     private String avatarUrl;
 
-    public Friend(String userId, String userName, String mail, String avatarUrl) {
+    public BriefUser(String userId, String userName, String mail, String avatarUrl) {
         this.userId = userId;
         this.userName = userName;
         this.mail = mail;
         this.avatarUrl = avatarUrl;
     }
 
-    public Friend() {
+    public BriefUser() {
     }
 
     @Override
     public String toString() {
-        return "Friend{" +
+        return "BriefUser{" +
                 "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", mail='" + mail + '\'' +

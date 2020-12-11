@@ -11,56 +11,37 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-/**
- * The Model(Domain) Class Note.
- *
- * @author Danushka Jayamaha
- */
-@JsonInclude(Include.ALWAYS)
+
 @Document(collection = "note")
 public class Note {
 
-    /**
-     * The note id.
-     */
+
     @Id
     private String id;
 
-    /**
-     * The topic.
-     */
-    @NotEmpty
     private String topic;
 
-    /**
-     * The description.
-     */
-    @NotEmpty
     private String description;
 
-    /**
-     * The deleted flag.
-     */
     @JsonIgnore
     private boolean deleted;
 
-    /**
-     * The created time.
-     */
     private Date createdAt;
 
-    /**
-     * The updated time.
-     */
     private Date updatedAt;
 
     private List<BriefNote> subNotes;
 
     private BriefNote prevNote;
 
+    private BriefUser userInfo;
+
     private Boolean isPublic;
 
-    public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNote prevNote, Boolean isPublic) {
+    public Note() {
+    }
+
+    public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNote prevNote, BriefUser userInfo, Boolean isPublic) {
         this.id = id;
         this.topic = topic;
         this.description = description;
@@ -69,10 +50,16 @@ public class Note {
         this.updatedAt = updatedAt;
         this.subNotes = subNotes;
         this.prevNote = prevNote;
+        this.userInfo = userInfo;
         this.isPublic = isPublic;
     }
 
-    public Note() {
+    public BriefUser getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(BriefUser userInfo) {
+        this.userInfo = userInfo;
     }
 
     public List<BriefNote> getSubNotes() {
@@ -218,6 +205,7 @@ public class Note {
                 ", updatedAt=" + updatedAt +
                 ", subNotes=" + subNotes +
                 ", prevNote=" + prevNote +
+                ", userInfo=" + userInfo +
                 ", isPublic=" + isPublic +
                 '}';
     }

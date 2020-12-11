@@ -1,7 +1,5 @@
 package com.mgnote.mgnote.model;
 
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
-
 import java.util.List;
 
 public class User {
@@ -11,12 +9,12 @@ public class User {
     private String mail;
     private String avatarUrl;
     private String directoryId;
-    private List<Friend> friends;
+    private List<BriefUser> friends;
 
     public User() {
     }
 
-    public User(String userId, String userName, String password, String mail, String avatarUrl, String directoryId, List<Friend> friends) {
+    public User(String userId, String userName, String password, String mail, String avatarUrl, String directoryId, List<BriefUser> friends) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
@@ -74,11 +72,11 @@ public class User {
         this.directoryId = directoryId;
     }
 
-    public List<Friend> getFriends() {
+    public List<BriefUser> getFriends() {
         return friends;
     }
 
-    public void setFriends(List<Friend> friends) {
+    public void setFriends(List<BriefUser> friends) {
         this.friends = friends;
     }
 
