@@ -18,7 +18,7 @@ public class BriefUser {
 
     @Override
     public String toString() {
-        return "BriefUser{" +
+        return "BriefUserService{" +
                 "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", mail='" + mail + '\'' +
