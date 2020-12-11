@@ -1,6 +1,11 @@
 package com.mgnote.mgnote.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "note_content")
 public class NoteContent {
+    @Id
     private String id;
     private String content;
 

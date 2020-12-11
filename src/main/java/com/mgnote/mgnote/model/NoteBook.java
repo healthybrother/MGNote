@@ -1,8 +1,13 @@
 package com.mgnote.mgnote.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
+@Document(collection = "notebook")
 public class NoteBook {
+    @Id
     private String id;
     private BriefDirectory prevDirectory;
     private String title;

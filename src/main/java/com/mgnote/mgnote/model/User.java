@@ -1,9 +1,14 @@
 package com.mgnote.mgnote.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
+@Document(collection = "user")
 public class User {
-    private String userId;
+    @Id
+    private String id;
     private String userName;
     private String password;
     private String mail;
@@ -14,8 +19,8 @@ public class User {
     public User() {
     }
 
-    public User(String userId, String userName, String password, String mail, String avatarUrl, String directoryId, List<BriefUser> friends) {
-        this.userId = userId;
+    public User(String id, String userName, String password, String mail, String avatarUrl, String directoryId, List<BriefUser> friends) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
         this.mail = mail;
@@ -24,12 +29,12 @@ public class User {
         this.friends = friends;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -83,7 +88,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
+                "userId='" + id + '\'' +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", mail='" + mail + '\'' +
