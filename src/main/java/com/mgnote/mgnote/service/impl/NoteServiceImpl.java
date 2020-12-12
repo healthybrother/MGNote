@@ -40,4 +40,14 @@ public class NoteServiceImpl implements NoteService {
         }
         throw new EntityNotExistException("符合id的笔记不存在");
     }
+
+    @Override
+    public void updateNoteBy(String noteId, Note note) {
+
+    }
+
+    @Override
+    public void deleteNoteSoft(String noteId) {
+
+    }
 }

@@ -1,7 +1,7 @@
 package com.mgnote.mgnote.exception.handler;
 
 import com.mgnote.mgnote.exception.EntityNotExistException;
-import com.mgnote.mgnote.model.dto.ResponseValue;
+import com.mgnote.mgnote.exception.ExceptionMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,12 +17,12 @@ import javax.servlet.http.HttpServletRequest;
  * @author Danushka Jayamaha
  */
 @ControllerAdvice
-public class NoteExceptionHandler extends ResponseEntityExceptionHandler {
+public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotExistException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ResponseValue<?> resourceNotFoundException(final HttpServletRequest req, final EntityNotExistException ex) {
-        return ResponseValue.fail("信息不存在");
+    public ExceptionMessage resourceNotFoundException(final HttpServletRequest req, final EntityNotExistException ex) {
+        return new ExceptionMessage(ex.getCode(), ex.getMessage());
     }
 }

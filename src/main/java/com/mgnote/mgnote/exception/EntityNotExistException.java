@@ -1,10 +1,10 @@
 package com.mgnote.mgnote.exception;
 
-public class EntityNotExistException extends Exception{
+import org.springframework.http.HttpStatus;
+
+public class EntityNotExistException extends CommonException{
 
     public EntityNotExistException(String message) {
-        super(message);
+        super(HttpStatus.NOT_FOUND.value(), message);
     }
-
-    public EntityNotExistException(){}
 }
