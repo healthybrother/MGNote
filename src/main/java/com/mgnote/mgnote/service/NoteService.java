@@ -34,4 +34,10 @@ public interface NoteService {
      * @param noteId 笔记信息的id
      */
     void deleteNoteSoft(String noteId);
+
+    /**
+     * 根据笔记信息的id进行删除
+     * @param noteId 笔记信息的id
+     */
+    void deleteNote(String noteId);
 }

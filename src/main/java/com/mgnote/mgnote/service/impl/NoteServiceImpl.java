@@ -43,11 +43,32 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public void updateNoteBy(String noteId, Note note) {
-
+        Preconditions.checkNotNull(noteId, "未输入笔记id");
+        Preconditions.checkNotNull(note, "未输入笔记信息");
+        Optional<Note> opt = noteRepository.findById(noteId);
+        if(opt.isPresent()){
+            note.setId(noteId);
+            Note after = EntityUtil.copyProperties(note, opt.get(), true);
+            noteRepository.save(after);
+        }
+        throw new EntityNotExistException("符合id的笔记不存在");
     }
 
     @Override
     public void deleteNoteSoft(String noteId) {
+        Preconditions.checkNotNull(noteId, "未输入笔记id");
+        Optional<Note> opt = noteRepository.findById(noteId);
+        if(opt.isPresent()){
+            Note note = opt.get();
+            note.setDeleted(true);
+            noteRepository.save(note);
+        }
+        throw new EntityNotExistException("符合id的笔记不存在");
+    }
 
+    @Override
+    public void deleteNote(String noteId) {
+        Preconditions.checkNotNull(noteId, "未输入笔记id");
+        noteRepository.deleteById(noteId);
     }
 }
