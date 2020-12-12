@@ -12,6 +12,11 @@ public class BriefDirectory {
     public BriefDirectory() {
     }
 
+    public BriefDirectory(Directory directory){
+        this.id = directory.getId();
+        this.name = directory.getName();
+    }
+
     public String getId() {
         return id;
     }

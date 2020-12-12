@@ -29,6 +29,13 @@ public class User {
         this.friends = friends;
     }
 
+    public User(BriefUser briefUser){
+        this.id = briefUser.getUserId();
+        this.avatarUrl = briefUser.getAvatarUrl();
+        this.mail = briefUser.getMail();
+        this.userName = briefUser.getUserName();
+    }
+
     public String getId() {
         return id;
     }

@@ -25,6 +25,11 @@ public class Directory {
     public Directory() {
     }
 
+    public Directory(BriefDirectory briefDirectory){
+        this.id = briefDirectory.getId();
+        this.name = briefDirectory.getName();
+    }
+
     public String getId() {
         return id;
     }

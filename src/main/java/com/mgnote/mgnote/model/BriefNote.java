@@ -14,6 +14,11 @@ public class BriefNote {
     public BriefNote() {
     }
 
+    public BriefNote(Note note){
+        this.id = note.getId();
+        this.topic = note.getTopic();
+    }
+
     public String getId() {
         return id;
     }

@@ -11,28 +11,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Document(collection = "note")
 public class Note {
-
-
     @Id
     private String id;
-
     private String topic;
-
     private String description;
-
     @JsonIgnore
     private Boolean deleted;
-
     private Date createdAt;
-
     private Date updatedAt;
-
     private List<BriefNote> subNotes;
-
     private BriefNote prevNote;
-
     private BriefUser userInfo;
-
     private Boolean isPublic;
 
     public Note() {
@@ -53,6 +42,11 @@ public class Note {
         this.prevNote = prevNote;
         this.userInfo = userInfo;
         this.isPublic = isPublic;
+    }
+
+    public Note(BriefNote briefNote){
+        this.id = briefNote.getId();
+        this.topic = briefNote.getTopic();
     }
 
     public BriefUser getUserInfo() {

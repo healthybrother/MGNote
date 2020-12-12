@@ -16,6 +16,13 @@ public class BriefUser {
     public BriefUser() {
     }
 
+    public BriefUser(User user){
+        this.avatarUrl = user.getAvatarUrl();
+        this.mail = user.getMail();
+        this.userId = user.getId();
+        this.userName = user.getUserName();
+    }
+
     @Override
     public String toString() {
         return "BriefUserService{" +
