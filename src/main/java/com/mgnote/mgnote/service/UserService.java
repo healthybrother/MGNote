@@ -27,6 +27,14 @@ public interface UserService {
     User getUserById(String userId);
 
     /**
+     * 根据用户名获取用户信息
+     * @param userName 用户名
+     * @return  用户信息
+     */
+    User getUserByName(String userName);
+
+
+    /**
      * 关注另一个用户
      * @param userId 用户id
      * @param otherId 被关注的用户id
