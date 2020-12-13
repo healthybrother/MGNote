@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,9 +49,11 @@ public class NoteServiceImpl implements NoteService {
         noteContent.setId(id);
         note.setUserInfo(new BriefUser(opt2.get()));
         Note after = EntityUtil.copyProperties(new Note(), note, true);
-        noteRepository.save(after);
         NoteBook noteBook = opt.get();
         noteBook.getNotes().add(new BriefNote(after));
+        after.setPrevNoteBook(new BriefNoteBook(noteBook));
+        after.setPrevNote(null);
+        noteRepository.save(after);
         noteBookRepository.save(noteBook);
         noteContentRepository.save(noteContent);
         return id;
@@ -69,9 +72,11 @@ public class NoteServiceImpl implements NoteService {
         note.setId(id);
         noteContent.setId(id);
         note.setPrevNote(new BriefNote(opt.get()));
+        note.setPrevNoteBook(null);
         Note superNote = opt.get();
         superNote.getSubNotes().add(new BriefNote(note));
-        noteRepository.save(note);
+        Note after = EntityUtil.copyProperties(new Note(), note, true);
+        noteRepository.save(after);
         noteRepository.save(superNote);
         noteContentRepository.save(noteContent);
         return id;
@@ -102,7 +107,7 @@ public class NoteServiceImpl implements NoteService {
         throw new EntityNotExistException("符合id的笔记不存在");
     }
 
-    //TODO:未删除笔记本或父笔记中的BriefNote
+    //TODO:未删除笔记本或父笔记中的BriefNote，这里应该有更好的设计
     @Override
     public void deleteNoteSoft(String noteId) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
@@ -118,6 +123,28 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void deleteNote(String noteId) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
+        Optional<Note> opt = noteRepository.findById(noteId);
+        if(!opt.isPresent()) return;
+        Note note = opt.get();
+        if(note.getPrevNote() != null){
+            Note fatherNote = noteRepository.findById(note.getPrevNote().getId()).get();
+            deleteFromNoteList(fatherNote.getSubNotes(), noteId);
+            noteRepository.save(fatherNote);
+        }
+        else if(note.getPrevNoteBook() != null){
+            NoteBook noteBook = noteBookRepository.findById(note.getPrevNote().getId()).get();
+            deleteFromNoteList(noteBook.getNotes(), noteId);
+            noteBookRepository.save(noteBook);
+        }
         noteRepository.deleteById(noteId);
+    }
+
+    private void deleteFromNoteList(List<BriefNote> list, String noteId){
+        for (BriefNote briefNote: list) {
+            if(briefNote.getId().equals(noteId)){
+                list.remove(briefNote);
+                return;
+            }
+        }
     }
 }

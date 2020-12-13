@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Document(collection = "note")
-public class Note {
+public class Note{
     @Id
     private String id;
     private String topic;
@@ -20,6 +20,7 @@ public class Note {
     private Date createdAt;
     private Date updatedAt;
     private List<BriefNote> subNotes;
+    private BriefNoteBook prevNoteBook;
     private BriefNote prevNote;
     private BriefUser userInfo;
     private Boolean isPublic;
@@ -31,7 +32,7 @@ public class Note {
         this.isPublic = false;
     }
 
-    public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNote prevNote, BriefUser userInfo, Boolean isPublic) {
+    public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNoteBook prevNoteBook, BriefNote briefNote, BriefUser userInfo, Boolean isPublic) {
         this.id = id;
         this.topic = topic;
         this.description = description;
@@ -39,6 +40,7 @@ public class Note {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.subNotes = subNotes;
+        this.prevNoteBook = prevNoteBook;
         this.prevNote = prevNote;
         this.userInfo = userInfo;
         this.isPublic = isPublic;
@@ -65,12 +67,12 @@ public class Note {
         this.subNotes = subNotes;
     }
 
-    public BriefNote getPrevNote() {
-        return prevNote;
+    public BriefNoteBook getPrevNoteBook() {
+        return prevNoteBook;
     }
 
-    public void setPrevNote(BriefNote prevNote) {
-        this.prevNote = prevNote;
+    public void setPrevNoteBook(BriefNoteBook prevNoteBook) {
+        this.prevNoteBook = prevNoteBook;
     }
 
     public Boolean getPublic() {
@@ -79,6 +81,18 @@ public class Note {
 
     public void setPublic(Boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public BriefNote getPrevNote() {
+        return prevNote;
+    }
+
+    public void setPrevNote(BriefNote prevNote) {
+        this.prevNote = prevNote;
     }
 
     /**
@@ -199,6 +213,7 @@ public class Note {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", subNotes=" + subNotes +
+                ", prevNoteBook=" + prevNoteBook +
                 ", prevNote=" + prevNote +
                 ", userInfo=" + userInfo +
                 ", isPublic=" + isPublic +
