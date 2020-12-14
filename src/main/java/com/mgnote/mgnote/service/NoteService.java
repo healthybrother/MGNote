@@ -40,7 +40,7 @@ public interface NoteService {
      * @param noteId 笔记信息的id
      * @param note 笔记的信息
      */
-    void updateNoteBy(String noteId, Note note);
+    void updateNoteById(String noteId, Note note);
 
     /**
      * 根据笔记信息的id进行软删除（设置deleted）

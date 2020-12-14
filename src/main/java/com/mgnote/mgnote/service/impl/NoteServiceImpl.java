@@ -93,7 +93,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void updateNoteBy(String noteId, Note note) {
+    public void updateNoteById(String noteId, Note note) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
         Preconditions.checkNotNull(note, "未输入笔记信息");
         Optional<Note> opt = noteRepository.findById(noteId);
@@ -103,11 +103,14 @@ public class NoteServiceImpl implements NoteService {
             after.setDeleted(false);
             after.setUpdatedAt(new Date());
             noteRepository.save(after);
+            if(!after.getTopic().equals(note.getTopic())){
+                updateInPrev(after);
+            }
         }
         throw new EntityNotExistException("符合id的笔记不存在");
     }
 
-    //TODO:未删除笔记本或父笔记中的BriefNote，这里应该有更好的设计
+    //TODO:Note相关的应该有更好的设计
     @Override
     public void deleteNoteSoft(String noteId) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
@@ -116,6 +119,7 @@ public class NoteServiceImpl implements NoteService {
             Note note = opt.get();
             note.setDeleted(true);
             noteRepository.save(note);
+            deleteFromPrev(noteId, note);
         }
         throw new EntityNotExistException("符合id的笔记不存在");
     }
@@ -126,23 +130,72 @@ public class NoteServiceImpl implements NoteService {
         Optional<Note> opt = noteRepository.findById(noteId);
         if(!opt.isPresent()) return;
         Note note = opt.get();
-        if(note.getPrevNote() != null){
-            Note fatherNote = noteRepository.findById(note.getPrevNote().getId()).get();
-            deleteFromNoteList(fatherNote.getSubNotes(), noteId);
-            noteRepository.save(fatherNote);
-        }
-        else if(note.getPrevNoteBook() != null){
-            NoteBook noteBook = noteBookRepository.findById(note.getPrevNote().getId()).get();
-            deleteFromNoteList(noteBook.getNotes(), noteId);
-            noteBookRepository.save(noteBook);
-        }
+        deleteFromPrev(noteId, note);
         noteRepository.deleteById(noteId);
     }
 
-    private void deleteFromNoteList(List<BriefNote> list, String noteId){
+    private void deleteFromPrev(String noteId, Note note) {
+        if(note.getPrevNote() != null){
+            Optional<Note> opt = noteRepository.findById(note.getPrevNote().getId());
+            if(opt.isPresent()){
+                Note fatherNote = opt.get();
+                deleteFromPrevList(fatherNote.getSubNotes(), noteId);
+                noteRepository.save(fatherNote);
+            }
+            else {
+                throw new EntityNotExistException("父笔记本不存在！");
+            }
+        }
+        else if(note.getPrevNoteBook() != null){
+            Optional<NoteBook> opt = noteBookRepository.findById(note.getPrevNoteBook().getId());
+            if(opt.isPresent()){
+                NoteBook noteBook = opt.get();
+                deleteFromPrevList(noteBook.getNotes(), noteId);
+                noteBookRepository.save(noteBook);
+            }
+            else{
+                throw new EntityNotExistException("父笔记不存在！");
+            }
+        }
+    }
+
+    private void deleteFromPrevList(List<BriefNote> list, String noteId){
         for (BriefNote briefNote: list) {
             if(briefNote.getId().equals(noteId)){
                 list.remove(briefNote);
+                return;
+            }
+        }
+    }
+
+    private void updateInPrev(Note note){
+        List<BriefNote> prevList;
+        if(note.getPrevNoteBook()!=null){
+            Optional<NoteBook> opt = noteBookRepository.findById(note.getPrevNoteBook().getId());
+            if(opt.isPresent()){
+                NoteBook noteBook = opt.get();
+                prevList = noteBook.getNotes();
+            }
+            else{
+                throw new EntityNotExistException("父笔记本不存在!");
+            }
+        }
+        else if(note.getPrevNote()!=null){
+            Optional<Note> opt = noteRepository.findById(note.getPrevNote().getId());
+            if(opt.isPresent()){
+                Note fatherNote = opt.get();
+                prevList = fatherNote.getSubNotes();
+            }
+            else{
+                throw new EntityNotExistException("父笔记不存在！");
+            }
+        }
+        else{
+            return;
+        }
+        for (BriefNote briefNote:prevList) {
+            if(briefNote.getId().equals(note.getId())){
+                briefNote.setTopic(note.getTopic());
                 return;
             }
         }
