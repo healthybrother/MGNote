@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User login(String userName, String password) {
         Preconditions.checkNotNull(userName, password,"未输入用户名", "未输入用户密码");
-        Optional<User> opt = userRepository.findByName(userName);//这个后面实现
+        Optional<User> opt = userRepository.findByUserName(userName);//这个后面实现
         if(!opt.isPresent())throw new EntityNotExistException("符合用户名的用户不存在");
         User toLogin = opt.get();
         if(toLogin.getPassword().equals(password)){
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByName(String userName) {
         Preconditions.checkNotNull(userName, "未输入用户名");
-        Optional<User> opt = userRepository.findByName(userName);//这个后面实现
+        Optional<User> opt = userRepository.findByUserName(userName);//这个后面实现
         if(opt.isPresent()){
             return opt.get();
         }
