@@ -93,7 +93,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void updateNoteById(String noteId, Note note) {
+    public void updateNoteInfoById(String noteId, Note note) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
         Preconditions.checkNotNull(note, "未输入笔记信息");
         Optional<Note> opt = noteRepository.findById(noteId);
@@ -132,6 +132,29 @@ public class NoteServiceImpl implements NoteService {
         Note note = opt.get();
         deleteFromPrev(noteId, note);
         noteRepository.deleteById(noteId);
+    }
+
+    @Override
+    public void updateNoteContentById(String noteContentId, NoteContent noteContent) {
+        Preconditions.checkNotNull(noteContentId, "未输入笔记内容id");
+        Preconditions.checkNotNull(noteContent, "未输入笔记内容");
+        Optional<NoteContent> opt = noteContentRepository.findById(noteContentId);
+        if(opt.isPresent()){
+            NoteContent content = opt.get();
+            noteContent.setId(noteContentId);
+            NoteContent after = EntityUtil.copyProperties(noteContent, content, true);
+            noteContentRepository.save(after);
+        }
+        throw new EntityNotExistException("目标笔记内容不存在");
+    }
+
+    @Override
+    public void updateNoteById(String id, Note noteInfo, NoteContent noteContent) {
+        Preconditions.checkNotNull(id, "未输入笔记id");
+        Preconditions.checkNotNull(noteInfo, "未输入笔记信息");
+        Preconditions.checkNotNull(noteContent, "未输入笔记内容");
+        updateNoteInfoById(id, noteInfo);
+        updateNoteContentById(id, noteContent);
     }
 
     private void deleteFromPrev(String noteId, Note note) {
@@ -176,9 +199,7 @@ public class NoteServiceImpl implements NoteService {
                 NoteBook noteBook = opt.get();
                 prevList = noteBook.getNotes();
             }
-            else{
-                throw new EntityNotExistException("父笔记本不存在!");
-            }
+            else throw new EntityNotExistException("父笔记本不存在!");
         }
         else if(note.getPrevNote()!=null){
             Optional<Note> opt = noteRepository.findById(note.getPrevNote().getId());
@@ -186,13 +207,9 @@ public class NoteServiceImpl implements NoteService {
                 Note fatherNote = opt.get();
                 prevList = fatherNote.getSubNotes();
             }
-            else{
-                throw new EntityNotExistException("父笔记不存在！");
-            }
+            else throw new EntityNotExistException("父笔记不存在！");
         }
-        else{
-            return;
-        }
+        else return;
         for (BriefNote briefNote:prevList) {
             if(briefNote.getId().equals(note.getId())){
                 briefNote.setTopic(note.getTopic());

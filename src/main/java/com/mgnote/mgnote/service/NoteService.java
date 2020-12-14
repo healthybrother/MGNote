@@ -40,7 +40,7 @@ public interface NoteService {
      * @param noteId 笔记信息的id
      * @param note 笔记的信息
      */
-    void updateNoteById(String noteId, Note note);
+    void updateNoteInfoById(String noteId, Note note);
 
     /**
      * 根据笔记信息的id进行软删除（设置deleted）
@@ -54,4 +54,18 @@ public interface NoteService {
      */
     void deleteNote(String noteId);
 
+    /**
+     * 根据笔记内容id跟新笔记内容
+     * @param noteContentId 笔记内容id
+     * @param noteContent 笔记内容
+     */
+    void updateNoteContentById(String noteContentId, NoteContent noteContent);
+
+    /**
+     * 根据id更新笔记信息以及笔记内容
+     * @param id 笔记id
+     * @param noteInfo 笔记信息
+     * @param noteContent 笔记内容
+     */
+    void updateNoteById(String id, Note noteInfo, NoteContent noteContent);
 }
