@@ -13,13 +13,15 @@ public class Directory {
     private List<BriefDirectory> directories;
     private List<NoteBook> noteBooks;
     private BriefDirectory prevDirectory;
+    private String userId;
 
-    public Directory(String id, String name, List<BriefDirectory> directories, List<NoteBook> noteBooks, BriefDirectory prevDirectory) {
+    public Directory(String id, String name, List<BriefDirectory> directories, List<NoteBook> noteBooks, BriefDirectory prevDirectory, String userId) {
         this.id = id;
         this.name = name;
         this.directories = directories;
         this.noteBooks = noteBooks;
         this.prevDirectory = prevDirectory;
+        this.userId = userId;
     }
 
     public Directory() {
@@ -70,6 +72,14 @@ public class Directory {
         this.prevDirectory = prevDirectory;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "Directory{" +
@@ -78,6 +88,7 @@ public class Directory {
                 ", directories=" + directories +
                 ", noteBooks=" + noteBooks +
                 ", prevDirectory=" + prevDirectory +
+                ", userId='" + userId + '\'' +
                 '}';
     }
 }

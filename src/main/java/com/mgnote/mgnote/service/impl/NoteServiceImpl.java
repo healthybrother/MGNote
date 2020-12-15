@@ -2,6 +2,7 @@ package com.mgnote.mgnote.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.mgnote.mgnote.exception.EntityNotExistException;
+import com.mgnote.mgnote.exception.PermissionException;
 import com.mgnote.mgnote.model.*;
 import com.mgnote.mgnote.model.dto.GetNoteOutput;
 import com.mgnote.mgnote.repository.NoteBookRepository;
@@ -42,12 +43,17 @@ public class NoteServiceImpl implements NoteService {
         if(!opt.isPresent() || !opt2.isPresent()){
             throw new EntityNotExistException("笔记本或用户不存在");
         }
+
+        NoteBook noteBook = opt.get();
+        if(!noteBook.getUserId().equals(userId)){
+            throw new PermissionException("无权访问笔记本");
+        }
+
         String id = UUID.randomUUID().toString();
         note.setId(id);
         noteContent.setId(id);
         note.setUserInfo(new BriefUser(opt2.get()));
         Note after = EntityUtil.copyProperties(new Note(), note, true);
-        NoteBook noteBook = opt.get();
         noteBook.getNotes().add(new BriefNote(after));
         after.setPrevNoteBook(new BriefNoteBook(noteBook));
         after.setPrevNote(null);

@@ -13,6 +13,6 @@ import java.util.List;
  */
 @Repository
 public interface NoteRepository extends MongoRepository<Note, String> {
-
+    void deleteNotesById(List<String> id);
     List<Note> findAllByIdIn(List<String> ids);
 }

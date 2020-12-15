@@ -13,13 +13,22 @@ public class NoteBook {
     private String title;
     private Boolean isPublic;
     private List<BriefNote> notes;
+    private String userId;
 
-    public NoteBook(String id, BriefDirectory prevDirectory, String title, Boolean isPublic, List<BriefNote> notes) {
+    public static final NoteBook DEFAULT = new NoteBook();
+
+    static{
+        DEFAULT.setPublic(false);
+        DEFAULT.setTitle("新建笔记本");
+    }
+
+    public NoteBook(String id, BriefDirectory prevDirectory, String title, Boolean isPublic, List<BriefNote> notes, String userId) {
         this.id = id;
         this.prevDirectory = prevDirectory;
         this.title = title;
         this.isPublic = isPublic;
         this.notes = notes;
+        this.userId = userId;
     }
 
     public NoteBook() {
@@ -65,6 +74,15 @@ public class NoteBook {
         this.notes = notes;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+
     @Override
     public String toString() {
         return "NoteBook{" +
@@ -73,6 +91,7 @@ public class NoteBook {
                 ", title='" + title + '\'' +
                 ", isPublic=" + isPublic +
                 ", notes=" + notes +
+                ", userId='" + userId + '\'' +
                 '}';
     }
 }
