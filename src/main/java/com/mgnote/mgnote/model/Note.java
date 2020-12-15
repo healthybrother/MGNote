@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Document(collection = "note")
-public class Note{
+public class Note {
     @Id
     private String id;
     private String topic;
@@ -32,7 +32,7 @@ public class Note{
         this.isPublic = false;
     }
 
-    public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNoteBook prevNoteBook, BriefNote briefNote, BriefUser userInfo, Boolean isPublic) {
+    public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNoteBook prevNoteBook, BriefNote prevNote, BriefUser userInfo, Boolean isPublic) {
         this.id = id;
         this.topic = topic;
         this.description = description;

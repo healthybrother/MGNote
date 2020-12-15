@@ -1,7 +1,5 @@
 package com.mgnote.mgnote.model;
 
-import java.util.List;
-
 public class BriefNote {
     private String id;
     private String topic;

@@ -3,6 +3,7 @@ package com.mgnote.mgnote.service;
 import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.Note;
 import com.mgnote.mgnote.model.NoteContent;
+import com.mgnote.mgnote.model.dto.GetNoteOutput;
 
 import java.util.List;
 
@@ -33,7 +34,42 @@ public interface NoteService {
      * @return 笔记信息（不包括内容）
      * @throws EntityNotExistException 符合id的note不存在时抛出异常
      */
-    Note getNoteById(String noteId) throws EntityNotExistException;
+    Note getNoteInfoById(String noteId) throws EntityNotExistException;
+
+    /**
+     * 根据笔记内容id获取笔记内容
+     * @param noteContentId 笔记内容id
+     * @return 笔记内容
+     */
+    NoteContent getNoteContentById(String noteContentId);
+
+    /**
+     * 根据id获取笔记信息以及内容
+     * @param id 笔记信息以及笔记内容的id
+     * @return 笔记（包括信息以及内容）
+     */
+    GetNoteOutput getNoteById(String id);
+
+    /**
+     * 根据id列表获取笔记信息列表
+     * @param ids 笔记信息id列表
+     * @return 笔记信息列表
+     */
+    List<Note> getNotesById(List<String> ids);
+
+    /**
+     * 根据id列表获取笔记内容列表
+     * @param ids 笔记内容id列表
+     * @return 笔记内容列表
+     */
+    List<NoteContent> getNoteContentsById(List<String> ids);
+
+    /**
+     * 根据id列表获取笔记信息和内容
+     * @param ids 笔记id列表
+     * @return 笔记列表
+     */
+    List<GetNoteOutput> getNoteOutputsById(List<String> ids);
 
     /**
      * 根据笔记id更新笔记信息
@@ -64,8 +100,14 @@ public interface NoteService {
     /**
      * 根据id更新笔记信息以及笔记内容
      * @param id 笔记id
-     * @param noteInfo 笔记信息
+     * @param note 笔记信息
      * @param noteContent 笔记内容
      */
-    void updateNoteById(String id, Note noteInfo, NoteContent noteContent);
+    void updateNoteById(String id, Note note, NoteContent noteContent);
+
+    /**
+     * 公开笔记
+     * @param noteId 笔记id
+     */
+    void publicNote(String noteId);
 }

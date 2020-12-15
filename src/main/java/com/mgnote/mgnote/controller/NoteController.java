@@ -41,7 +41,7 @@ public class NoteController {
 
     @RequestMapping(value = "/get/{noteId}", method = RequestMethod.GET)
     public ResponseEntity<?> getNoteById(@PathVariable String noteId) throws EntityNotExistException {
-        Note note = noteService.getNoteById(noteId);
+        Note note = noteService.getNoteInfoById(noteId);
         return new ResponseEntity<>(note, HttpStatus.OK);
     }
 }
