@@ -39,9 +39,10 @@ public interface NoteService {
     /**
      * 根据笔记内容id获取笔记内容
      * @param noteContentId 笔记内容id
+     * @param exist 是否需要判断相应的note是否存在
      * @return 笔记内容
      */
-    NoteContent getNoteContentById(String noteContentId);
+    NoteContent getNoteContentById(String noteContentId, Boolean exist);
 
     /**
      * 根据id获取笔记信息以及内容
@@ -110,4 +111,10 @@ public interface NoteService {
      * @param noteId 笔记id
      */
     void publicNote(String noteId);
+
+    /**
+     * 根据id列表批删除笔记（硬删除）
+     * @param ids 笔记id列表
+     */
+    void deleteNoteBatch(List<String> ids);
 }

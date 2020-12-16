@@ -136,6 +136,7 @@ public class NoteServiceImpl implements NoteService {
         Note note = opt.get();
         deleteFromPrev(noteId, note);
         noteRepository.deleteById(noteId);
+        noteContentRepository.deleteById(noteId);
     }
 
     @Override
@@ -174,13 +175,25 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public NoteContent getNoteContentById(String noteContentId) {
+    public NoteContent getNoteContentById(String noteContentId, Boolean exist) {
         Preconditions.checkNotNull(noteContentId, "未输入笔记内容id");
         Optional<NoteContent> opt = noteContentRepository.findById(noteContentId);
-        if(!opt.isPresent()){
-            throw new EntityNotExistException("笔记内容不存在");
+        if(exist){
+            Optional<Note> noteOptional = noteRepository.findById(noteContentId);
+            if(noteOptional.isPresent() && !noteOptional.get().getDeleted()){
+                if(!opt.isPresent()){
+                    throw new EntityNotExistException("笔记内容不存在");
+                }
+                return opt.get();
+            }
+            else throw new EntityNotExistException("笔记信息不存在");
         }
-        return opt.get();
+        else{
+            if(!opt.isPresent()){
+                throw new EntityNotExistException("笔记内容不存在");
+            }
+            return opt.get();
+        }
     }
 
     @Override
@@ -188,7 +201,7 @@ public class NoteServiceImpl implements NoteService {
         Preconditions.checkNotNull(id, "未输入笔记id");
         Optional<Note> noteOpt = noteRepository.findById(id);
         Optional<NoteContent> noteContentOpt = noteContentRepository.findById(id);
-        if(noteOpt.isPresent() && noteContentOpt.isPresent())
+        if(noteOpt.isPresent() && !noteOpt.get().getDeleted() && noteContentOpt.isPresent())
             return new GetNoteOutput(noteOpt.get(), noteContentOpt.get());
         throw new EntityNotExistException("笔记信息或笔记内容不存在");
     }
@@ -212,14 +225,24 @@ public class NoteServiceImpl implements NoteService {
         List<NoteContent> noteContents = getNoteContentsById(ids);
         List<GetNoteOutput> res = new ArrayList<>();
         for (Note note:notes) {
-            for(NoteContent noteContent:noteContents){
-                if(note.getId().equals(noteContent.getId())){
-                    res.add(new GetNoteOutput(note, noteContent));
-                    noteContents.remove(noteContent);
+            if(!note.getDeleted()){
+                for(NoteContent noteContent:noteContents){
+                    if(note.getId().equals(noteContent.getId())){
+                        res.add(new GetNoteOutput(note, noteContent));
+                        noteContents.remove(noteContent);
+                    }
                 }
             }
         }
         return res;
+    }
+
+    @Override
+    public void deleteNoteBatch(List<String> ids) {
+        Preconditions.checkNotNull(ids, "未输入id列表");
+        for(String id:ids) {
+            deleteNote(id);
+        }
     }
 
     private void deleteFromPrev(String noteId, Note note) {
