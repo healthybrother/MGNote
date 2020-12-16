@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -44,6 +46,10 @@ public class Note {
         this.prevNote = prevNote;
         this.userInfo = userInfo;
         this.isPublic = isPublic;
+    }
+
+    public Example<Note> getContainExample(){
+        return Example.of(this, ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
     }
 
     public Note(BriefNote briefNote){
