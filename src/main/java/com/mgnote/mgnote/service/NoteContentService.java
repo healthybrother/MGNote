@@ -8,10 +8,9 @@ public interface NoteContentService {
     /**
      * 根据笔记内容id获取笔记内容
      * @param noteContentId 笔记内容id
-     * @param exist 是否需要判断相应的note是否存在
      * @return 笔记内容
      */
-    NoteContent getNoteContentById(String noteContentId, Boolean exist);
+    NoteContent getNoteContentById(String noteContentId);
 
     /**
      * 根据id列表获取笔记内容列表

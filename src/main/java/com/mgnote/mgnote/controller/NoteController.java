@@ -2,6 +2,7 @@ package com.mgnote.mgnote.controller;
 
 import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.Note;
+import com.mgnote.mgnote.model.NoteContent;
 import com.mgnote.mgnote.model.dto.AddNoteInput;
 import com.mgnote.mgnote.service.NoteContentService;
 import com.mgnote.mgnote.service.NoteService;
@@ -51,5 +52,11 @@ public class NoteController {
     public ResponseEntity<?> getNoteById(@PathVariable String noteId) throws EntityNotExistException {
         Note note = noteService.getNoteInfoById(noteId);
         return new ResponseEntity<>(note, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get/content{contentId}")
+    public ResponseEntity<?> getContentById(@PathVariable String contentId){
+        NoteContent noteContent = noteContentService.getNoteContentById(contentId);
+        return new ResponseEntity<>(noteContent, HttpStatus.OK);
     }
 }

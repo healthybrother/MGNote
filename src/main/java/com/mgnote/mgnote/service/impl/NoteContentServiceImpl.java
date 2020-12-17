@@ -28,7 +28,7 @@ public class NoteContentServiceImpl implements NoteContentService {
     }
 
     @Override
-    public NoteContent getNoteContentById(String noteContentId, Boolean exist) {
+    public NoteContent getNoteContentById(String noteContentId) {
         Preconditions.checkNotNull(noteContentId, "未输入笔记内容id");
         Optional<NoteContent> opt = noteContentRepository.findById(noteContentId);
         if(opt.isPresent()) return opt.get();
