@@ -6,11 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * The Interface NoteRepository.
- *
- * @author Danushka Jayamaha
- */
 @Repository
 public interface NoteRepository extends MongoRepository<Note, String> {
     void deleteNotesById(List<String> id);

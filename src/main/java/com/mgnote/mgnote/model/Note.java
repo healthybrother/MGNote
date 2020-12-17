@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,12 +14,12 @@ public class Note {
     @Id
     private String id;
     private String topic;
-    private String description;
     @JsonIgnore
     private Boolean deleted;
     private Date createdAt;
     private Date updatedAt;
     private List<BriefNote> subNotes;
+    private List<String> contents;
     private BriefNoteBook prevNoteBook;
     private BriefNote prevNote;
     private BriefUser userInfo;
@@ -34,22 +32,18 @@ public class Note {
         this.isPublic = false;
     }
 
-    public Note(String id, String topic, String description, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, BriefNoteBook prevNoteBook, BriefNote prevNote, BriefUser userInfo, Boolean isPublic) {
+    public Note(String id, String topic, boolean deleted, Date createdAt, Date updatedAt, List<BriefNote> subNotes, List<String> contents, BriefNoteBook prevNoteBook, BriefNote prevNote, BriefUser userInfo, Boolean isPublic) {
         this.id = id;
         this.topic = topic;
-        this.description = description;
         this.deleted = deleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.subNotes = subNotes;
+        this.contents = contents;
         this.prevNoteBook = prevNoteBook;
         this.prevNote = prevNote;
         this.userInfo = userInfo;
         this.isPublic = isPublic;
-    }
-
-    public Example<Note> getContainExample(){
-        return Example.of(this, ExampleMatcher.matching().withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
     }
 
     public Note(BriefNote briefNote){
@@ -101,6 +95,14 @@ public class Note {
         this.prevNote = prevNote;
     }
 
+    public List<String> getContents() {
+        return contents;
+    }
+
+    public void setContents(List<String> contents) {
+        this.contents = contents;
+    }
+
     /**
      * Gets the note id.
      *
@@ -135,24 +137,6 @@ public class Note {
      */
     public void setTopic(final String topic) {
         this.topic = topic;
-    }
-
-    /**
-     * Gets the description.
-     *
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the description.
-     *
-     * @param description the description to set
-     */
-    public void setDescription(final String description) {
-        this.description = description;
     }
 
     /**
@@ -214,11 +198,11 @@ public class Note {
         return "Note{" +
                 "id='" + id + '\'' +
                 ", topic='" + topic + '\'' +
-                ", description='" + description + '\'' +
                 ", deleted=" + deleted +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", subNotes=" + subNotes +
+                ", contents=" + contents +
                 ", prevNoteBook=" + prevNoteBook +
                 ", prevNote=" + prevNote +
                 ", userInfo=" + userInfo +

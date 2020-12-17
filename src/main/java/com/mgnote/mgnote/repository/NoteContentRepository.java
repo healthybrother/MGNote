@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface NoteContentRepository extends MongoRepository<NoteContent, String> {
     List<NoteContent> findAllByIdIn(List<String> ids);
+    void deleteAllByIdIn(List<String> ids);
 }

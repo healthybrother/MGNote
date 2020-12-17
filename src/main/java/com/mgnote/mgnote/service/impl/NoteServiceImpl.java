@@ -5,13 +5,18 @@ import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.exception.PermissionException;
 import com.mgnote.mgnote.model.*;
 import com.mgnote.mgnote.model.dto.GetNoteOutput;
+import com.mgnote.mgnote.model.dto.ListPage;
+import com.mgnote.mgnote.model.dto.ListParam;
 import com.mgnote.mgnote.repository.NoteBookRepository;
 import com.mgnote.mgnote.repository.NoteContentRepository;
 import com.mgnote.mgnote.repository.NoteRepository;
 import com.mgnote.mgnote.repository.UserRepository;
 import com.mgnote.mgnote.service.NoteService;
 import com.mgnote.mgnote.util.EntityUtil;
+import com.mgnote.mgnote.util.ExampleUtil;
+import com.mgnote.mgnote.util.ListUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,56 +38,53 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public String addNote(String userId, String noteBookId, Note note, NoteContent noteContent) {
+    public String addNote(String userId, String noteBookId, Note note, List<String> noteContents) {
         Preconditions.checkNotNull(userId, "未输入用户id");
         Preconditions.checkNotNull(noteBookId, "未输入笔记本id");
         Preconditions.checkNotNull(note, "未输入笔记信息");
-        Preconditions.checkNotNull(noteContent, "未输入笔记内容");
+        Preconditions.checkNotNull(noteContents, "未输入笔记内容");
         Optional<NoteBook> opt = noteBookRepository.findById(noteBookId);
         Optional<User> opt2 = userRepository.findById(userId);
         if(!opt.isPresent() || !opt2.isPresent()){
             throw new EntityNotExistException("笔记本或用户不存在");
         }
-
         NoteBook noteBook = opt.get();
         if(!noteBook.getUserId().equals(userId)){
             throw new PermissionException("无权访问笔记本");
         }
-
         String id = UUID.randomUUID().toString();
         note.setId(id);
-        noteContent.setId(id);
         note.setUserInfo(new BriefUser(opt2.get()));
+        note.setContents(noteContents);
         Note after = EntityUtil.copyProperties(new Note(), note, true);
         noteBook.getNotes().add(new BriefNote(after));
         after.setPrevNoteBook(new BriefNoteBook(noteBook));
         after.setPrevNote(null);
         noteRepository.save(after);
         noteBookRepository.save(noteBook);
-        noteContentRepository.save(noteContent);
         return id;
     }
 
     @Override
-    public String addSubNote(String noteId, Note note, NoteContent noteContent) {
+    public String addSubNote(String noteId, Note note, List<String> noteContents) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
         Preconditions.checkNotNull(note, "未输入笔记信息");
-        Preconditions.checkNotNull(noteContent, "未输入笔记内容");
+        Preconditions.checkNotNull(noteContents, "未输入笔记内容");
         Optional<Note> opt = noteRepository.findById(noteId);
         if(!opt.isPresent()){
             throw new EntityNotExistException("父笔记不存在");
         }
         String id = UUID.randomUUID().toString();
         note.setId(id);
-        noteContent.setId(id);
         note.setPrevNote(new BriefNote(opt.get()));
         note.setPrevNoteBook(null);
+        note.setContents(noteContents);
         Note superNote = opt.get();
         superNote.getSubNotes().add(new BriefNote(note));
+        note.setUserInfo(superNote.getUserInfo());
         Note after = EntityUtil.copyProperties(new Note(), note, true);
         noteRepository.save(after);
         noteRepository.save(superNote);
-        noteContentRepository.save(noteContent);
         return id;
     }
 
@@ -114,7 +116,6 @@ public class NoteServiceImpl implements NoteService {
         throw new EntityNotExistException("符合id的笔记不存在");
     }
 
-    //TODO:Note相关的应该有更好的设计
     @Override
     public void deleteNoteSoft(String noteId) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
@@ -136,64 +137,26 @@ public class NoteServiceImpl implements NoteService {
         Note note = opt.get();
         deleteFromPrev(noteId, note);
         noteRepository.deleteById(noteId);
-        noteContentRepository.deleteById(noteId);
+        noteContentRepository.deleteAllByIdIn(note.getContents());
     }
 
     @Override
-    public void updateNoteContentById(String noteContentId, NoteContent noteContent) {
-        Preconditions.checkNotNull(noteContentId, "未输入笔记内容id");
-        Preconditions.checkNotNull(noteContent, "未输入笔记内容");
-        Optional<NoteContent> opt = noteContentRepository.findById(noteContentId);
-        if(opt.isPresent()){
-            NoteContent content = opt.get();
-            noteContent.setId(noteContentId);
-            NoteContent after = EntityUtil.copyProperties(noteContent, content, true);
-            noteContentRepository.save(after);
-        }
-        throw new EntityNotExistException("目标笔记内容不存在");
-    }
-
-    @Override
-    public void updateNoteById(String id, Note note, NoteContent noteContent) {
+    public void updateNoteById(String id, Note note) {
         Preconditions.checkNotNull(id, "未输入笔记id");
         Preconditions.checkNotNull(note, "未输入笔记信息");
-        Preconditions.checkNotNull(noteContent, "未输入笔记内容");
         updateNoteInfoById(id, note);
-        updateNoteContentById(id, noteContent);
     }
 
     @Override
-    public void publicNote(String noteId) {
+    public void setNotePublic(String noteId, Boolean isPublic) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
         Optional<Note> noteOpt = noteRepository.findById(noteId);
         if(!noteOpt.isPresent()){
             throw new EntityNotExistException("笔记不存在");
         }
         Note note = noteOpt.get();
-        note.setPublic(true);
+        note.setPublic(isPublic);
         noteRepository.save(note);
-    }
-
-    @Override
-    public NoteContent getNoteContentById(String noteContentId, Boolean exist) {
-        Preconditions.checkNotNull(noteContentId, "未输入笔记内容id");
-        Optional<NoteContent> opt = noteContentRepository.findById(noteContentId);
-        if(exist){
-            Optional<Note> noteOptional = noteRepository.findById(noteContentId);
-            if(noteOptional.isPresent() && !noteOptional.get().getDeleted()){
-                if(!opt.isPresent()){
-                    throw new EntityNotExistException("笔记内容不存在");
-                }
-                return opt.get();
-            }
-            else throw new EntityNotExistException("笔记信息不存在");
-        }
-        else{
-            if(!opt.isPresent()){
-                throw new EntityNotExistException("笔记内容不存在");
-            }
-            return opt.get();
-        }
     }
 
     @Override
@@ -213,36 +176,19 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<NoteContent> getNoteContentsById(List<String> ids) {
-        Preconditions.checkNotNull(ids, "未输入笔记内容id列表");
-        return noteContentRepository.findAllByIdIn(ids);
-    }
-
-    @Override
-    public List<GetNoteOutput> getNoteOutputsById(List<String> ids) {
-        Preconditions.checkNotNull(ids, "未输入id列表");
-        List<Note> notes = getNotesById(ids);
-        List<NoteContent> noteContents = getNoteContentsById(ids);
-        List<GetNoteOutput> res = new ArrayList<>();
-        for (Note note:notes) {
-            if(!note.getDeleted()){
-                for(NoteContent noteContent:noteContents){
-                    if(note.getId().equals(noteContent.getId())){
-                        res.add(new GetNoteOutput(note, noteContent));
-                        noteContents.remove(noteContent);
-                    }
-                }
-            }
-        }
-        return res;
-    }
-
-    @Override
     public void deleteNoteBatch(List<String> ids) {
         Preconditions.checkNotNull(ids, "未输入id列表");
         for(String id:ids) {
             deleteNote(id);
         }
+    }
+
+    @Override
+    public ListPage<Note> searchNoteInfo(Note note, ListParam listParam, Boolean isPublic) {
+        Preconditions.checkNotNull(note, "未输入笔记信息");
+        Preconditions.checkNotNull(listParam, "未输入分页参数");
+        Page<Note> page = noteRepository.findAll(ExampleUtil.getNoteExample(note, isPublic), ListUtil.getPageableByListParam(listParam));
+        return new ListPage<Note>(page.toList(), ListUtil.getListParamByPage(page));
     }
 
     private void deleteFromPrev(String noteId, Note note) {
