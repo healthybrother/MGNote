@@ -3,17 +3,19 @@ package com.mgnote.mgnote.model.dto;
 import com.mgnote.mgnote.model.Note;
 import com.mgnote.mgnote.model.NoteContent;
 
+import java.util.List;
+
 public class AddNoteInput {
     private String userId;
     private String id;
     private Note note;
-    private NoteContent noteContent;
+    private List<NoteContent> noteContents;
 
-    public AddNoteInput(String userId, String id, Note note, NoteContent noteContent) {
+    public AddNoteInput(String userId, String id, Note note, List<NoteContent> noteContents) {
         this.userId = userId;
         this.id = id;
         this.note = note;
-        this.noteContent = noteContent;
+        this.noteContents = noteContents;
     }
 
     public AddNoteInput() {
@@ -27,12 +29,12 @@ public class AddNoteInput {
         this.note = note;
     }
 
-    public NoteContent getNoteContent() {
-        return noteContent;
+    public List<NoteContent> getNoteContents() {
+        return noteContents;
     }
 
-    public void setNoteContent(NoteContent noteContent) {
-        this.noteContent = noteContent;
+    public void setNoteContents(List<NoteContent> noteContents) {
+        this.noteContents = noteContents;
     }
 
     public String getUserId() {
@@ -57,7 +59,7 @@ public class AddNoteInput {
                 "userId='" + userId + '\'' +
                 ", id='" + id + '\'' +
                 ", note=" + note +
-                ", noteContent=" + noteContent +
+                ", noteContents=" + noteContents +
                 '}';
     }
 }
