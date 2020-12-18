@@ -81,4 +81,10 @@ public class NoteContentServiceImpl implements NoteContentService {
         Preconditions.checkNotNull(contentId, "未输入内容id");
         noteContentRepository.deleteById(contentId);
     }
+
+    @Override
+    public void deleteContentsById(List<String> ids) {
+        Preconditions.checkNotNull(ids, "未输入笔记内容id列表");
+        noteContentRepository.deleteAllByIdIn(ids);
+    }
 }

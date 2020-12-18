@@ -106,4 +106,18 @@ public class NoteController {
         ListPage<Note> listPage = noteService.searchNoteInfo(input.getNote(), input.getListParam(), isPublic);
         return new ResponseEntity<>(listPage, HttpStatus.OK);
     }
+
+    @ApiOperation("获取笔记内容列表")
+    @PostMapping(value = "/get/content/list")
+    public ResponseEntity<?> getNoteContentList(@RequestBody List<String> ids){
+        List<NoteContent> noteContents = noteContentService.getNoteContentsById(ids);
+        return new ResponseEntity<>(noteContents, HttpStatus.OK);
+    }
+
+    @ApiOperation("批量删除笔记内容")
+    @PostMapping(value = "/delete/content/batch")
+    public ResponseEntity<?> deleteContentsBatch(List<String> ids){
+        noteContentService.deleteContentsById(ids);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }
