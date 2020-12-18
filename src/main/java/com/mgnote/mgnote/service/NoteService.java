@@ -100,4 +100,11 @@ public interface NoteService {
      * @return 分页后的笔记信息
      */
     ListPage<Note> searchNoteInfo(Note note, ListParam listParam, Boolean isPublic);
+
+    /**
+     * 在笔记中新增笔记内容
+     * @param noteId 笔记id
+     * @param noteContents 笔记内容列表
+     */
+    void addNoteContentsInNote(String noteId, List<String> noteContents);
 }

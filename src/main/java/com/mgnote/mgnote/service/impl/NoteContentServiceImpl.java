@@ -75,4 +75,10 @@ public class NoteContentServiceImpl implements NoteContentService {
             updateNoteContentById(noteContent.getId(), noteContent);
         }
     }
+
+    @Override
+    public void deleteContentById(String contentId) {
+        Preconditions.checkNotNull(contentId, "未输入内容id");
+        noteContentRepository.deleteById(contentId);
+    }
 }

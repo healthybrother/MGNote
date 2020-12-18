@@ -38,4 +38,10 @@ public interface NoteContentService {
      * @param noteContents 笔记内容列表
      */
     void updateNoteContentsById(List<NoteContent> noteContents);
+
+    /**
+     * 根据内容id删除内容
+     * @param contentId 内容id
+     */
+    void deleteContentById(String contentId);
 }

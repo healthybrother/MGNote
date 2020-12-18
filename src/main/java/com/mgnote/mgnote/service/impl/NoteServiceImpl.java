@@ -191,6 +191,21 @@ public class NoteServiceImpl implements NoteService {
         return new ListPage<Note>(page.toList(), ListUtil.getListParamByPage(page));
     }
 
+    @Override
+    public void addNoteContentsInNote(String noteId, List<String> noteContents) {
+        Preconditions.checkNotNull(noteId, "笔记id");
+        Preconditions.checkNotNull(noteContents, "笔记内容列表");
+        Optional<Note> opt = noteRepository.findById(noteId);
+        if(!opt.isPresent()){
+            throw new EntityNotExistException("笔记不存在");
+        }
+        Note note = opt.get();
+        List<String> ids = note.getContents();
+        ids.addAll(noteContents);
+        note.setContents(ids);
+        noteRepository.save(note);
+    }
+
     private void deleteFromPrev(String noteId, Note note) {
         if(note.getPrevNote() != null){
             Optional<Note> opt = noteRepository.findById(note.getPrevNote().getId());

@@ -83,4 +83,19 @@ public class NoteController {
         noteService.deleteNote(noteId);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
+    @ApiOperation("根据笔记内容id删除笔记内容")
+    @DeleteMapping(value = "/delete/content/{contentId}")
+    public ResponseEntity<?> deleteNoteContentById(@PathVariable String contentId){
+        noteContentService.deleteContentById(contentId);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @ApiOperation("新增笔记内容")
+    @PostMapping(value = "/add/content/{noteId}")
+    public ResponseEntity<?> addNoteContent(@PathVariable String noteId, @RequestBody List<NoteContent> noteContents){
+        List<String> ids = noteContentService.addNoteContents(noteContents);
+        noteService.addNoteContentsInNote(noteId, ids);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }
