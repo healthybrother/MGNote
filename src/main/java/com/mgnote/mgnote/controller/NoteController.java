@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.List;
 
 @Api
@@ -48,15 +49,38 @@ public class NoteController {
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
+    @ApiOperation("根据笔记id获取笔记")
     @RequestMapping(value = "/get/{noteId}", method = RequestMethod.GET)
     public ResponseEntity<?> getNoteById(@PathVariable String noteId) throws EntityNotExistException {
         Note note = noteService.getNoteInfoById(noteId);
         return new ResponseEntity<>(note, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/get/content{contentId}")
+    @ApiOperation("根据内容id获取内容")
+    @GetMapping(value = "/get/content/{contentId}")
     public ResponseEntity<?> getContentById(@PathVariable String contentId){
         NoteContent noteContent = noteContentService.getNoteContentById(contentId);
         return new ResponseEntity<>(noteContent, HttpStatus.OK);
+    }
+
+    @ApiOperation("根据笔记信息id更新笔记信息")
+    @PutMapping(value = "/update/note/{noteId}")
+    public ResponseEntity<?> updateNoteById(@PathVariable String noteId, @RequestBody Note note){
+        noteService.updateNoteById(noteId, note);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @ApiOperation("根据笔记内容id更新笔记内容")
+    @PutMapping(value = "/update/content/{contentId}")
+    public ResponseEntity<?> updateContentById(@PathVariable String contentId, @RequestBody NoteContent noteContent){
+        noteContentService.updateNoteContentById(contentId, noteContent);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @ApiOperation("根据id删除笔记信息，同时删除笔记内容")
+    @DeleteMapping(value = "/delete/note/{noteId}")
+    public ResponseEntity<?> deleteNoteById(@PathVariable String noteId){
+        noteService.deleteNote(noteId);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
