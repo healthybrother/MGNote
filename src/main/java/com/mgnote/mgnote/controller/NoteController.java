@@ -4,6 +4,8 @@ import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.Note;
 import com.mgnote.mgnote.model.NoteContent;
 import com.mgnote.mgnote.model.dto.AddNoteInput;
+import com.mgnote.mgnote.model.dto.ListPage;
+import com.mgnote.mgnote.model.dto.SearchNoteInput;
 import com.mgnote.mgnote.service.NoteContentService;
 import com.mgnote.mgnote.service.NoteService;
 import io.swagger.annotations.*;
@@ -14,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.ws.Response;
 import java.util.List;
 
 @Api
@@ -97,5 +98,12 @@ public class NoteController {
         List<String> ids = noteContentService.addNoteContents(noteContents);
         noteService.addNoteContentsInNote(noteId, ids);
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @ApiOperation("搜索符合条件的笔记")
+    @PostMapping(value = "/search")
+    public ResponseEntity<?> searchNote(@RequestParam(value = "isPublic") Boolean isPublic, @RequestBody SearchNoteInput input){
+        ListPage<Note> listPage = noteService.searchNoteInfo(input.getNote(), input.getListParam(), isPublic);
+        return new ResponseEntity<>(listPage, HttpStatus.OK);
     }
 }
