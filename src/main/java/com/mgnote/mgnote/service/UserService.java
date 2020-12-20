@@ -3,6 +3,7 @@ package com.mgnote.mgnote.service;
 import com.mgnote.mgnote.model.BriefUser;
 import com.mgnote.mgnote.model.User;
 
+
 public interface UserService {
     /**
      * 用户登录
@@ -10,7 +11,9 @@ public interface UserService {
      * @param password 密码
      * @return 返回用户信息
      */
-    User login(String userName, String password);
+    User loginByName(String userName, String password);
+
+    User loginByMail(String mail, String password);
 
     /**
      * 用户注册，添加新的用户信息
@@ -32,6 +35,8 @@ public interface UserService {
      * @return  用户信息
      */
     User getUserByName(String userName);
+
+    User getUserByMail(String mail);
 
 
     /**

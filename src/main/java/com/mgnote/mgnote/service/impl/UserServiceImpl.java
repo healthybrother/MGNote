@@ -4,8 +4,11 @@ import com.google.common.base.Preconditions;
 import com.mgnote.mgnote.exception.CommonException;
 import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.BriefUser;
+import com.mgnote.mgnote.model.Directory;
 import com.mgnote.mgnote.model.User;
+import com.mgnote.mgnote.repository.DirectoryRepository;
 import com.mgnote.mgnote.repository.UserRepository;
+import com.mgnote.mgnote.service.DirectoryService;
 import com.mgnote.mgnote.service.UserService;
 import com.mgnote.mgnote.util.EntityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,7 @@ import java.util.UUID;
 
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
-
+    private DirectoryRepository directoryRepository;
     @Autowired
     public UserServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
@@ -24,23 +27,43 @@ public class UserServiceImpl implements UserService {
 
     //todo 要不要做个邮箱登录
     @Override
-    public User login(String userName, String password) {
+    public User loginByName(String userName, String password) {
         Preconditions.checkNotNull(userName, password,"未输入用户名", "未输入用户密码");
         Optional<User> opt = userRepository.findByUserName(userName);//这个后面实现
         if(!opt.isPresent())throw new EntityNotExistException("符合用户名的用户不存在");
         User toLogin = opt.get();
         if(toLogin.getPassword().equals(password)){
             return toLogin;
-        }throw new CommonException(201,"密码错误");
+        }throw new CommonException(401,"密码错误");
+    }
+
+    @Override
+    public User loginByMail(String mail, String password) {
+        Preconditions.checkNotNull(mail, password,"未输入用户名", "未输入用户密码");
+        Optional<User> opt = userRepository.findByMail(mail);//这个后面实现
+        if(!opt.isPresent())throw new EntityNotExistException("使用该邮箱注册的用户不存在");
+        User toLogin = opt.get();
+        if(toLogin.getPassword().equals(password)){
+            return toLogin;
+        }throw new CommonException(401,"密码错误");
     }
 
     @Override
     public String addUser(User user) {
         Preconditions.checkNotNull(user, "未输入用户信息");
+        String inputUserName = user.getUserName();
+        String inputMail = user.getMail();
+        Optional<User> opt1 = userRepository.findByUserName(inputUserName);
+        Optional<User> opt2 = userRepository.findByMail(inputMail);
+        if(opt1.isPresent())throw new CommonException(403,"用户名已存在");
+        if(opt2.isPresent())throw new CommonException(404,"邮箱已被注册");
         String id = UUID.randomUUID().toString();
         user.setId(id);
         EntityUtil.copyProperties(new User(), user, true);
         userRepository.save(user);
+        Directory root = new Directory();
+        root.setUserId(id);
+        directoryRepository.save(root);
         return id;
     }
 
@@ -52,6 +75,16 @@ public class UserServiceImpl implements UserService {
             return opt.get();
         }
         throw new EntityNotExistException("符合id的用户不存在");
+    }
+
+    @Override
+    public User getUserByMail(String mail) {
+        Preconditions.checkNotNull(mail, "未输入用户邮箱");
+        Optional<User> opt = userRepository.findByMail(mail);
+        if(opt.isPresent()){
+            return opt.get();
+        }
+        throw new EntityNotExistException("符合邮箱的用户不存在");
     }
 
     @Override
@@ -75,7 +108,7 @@ public class UserServiceImpl implements UserService {
         User focus = opt1.get();
         BriefUser briefFoused = new BriefUser(opt2.get());
         List<BriefUser> friends = focus.getFriends();
-        if(friends.contains(briefFoused))throw new CommonException(202,"已关注该用户");//已关注则直接跳出，应该抛出异常
+        if(friends.contains(briefFoused))throw new CommonException(402,"已关注该用户");//已关注则直接跳出，应该抛出异常
         friends.add(briefFoused);
         focus.setFriends(friends);
         userRepository.save(focus);
