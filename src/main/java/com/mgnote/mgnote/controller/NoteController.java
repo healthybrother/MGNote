@@ -104,7 +104,7 @@ public class NoteController {
     @ApiOperation("搜索符合条件的笔记")
     @PostMapping(value = "/search")
     public ResponseEntity<?> searchNote(@RequestParam(value = "isPublic") Boolean isPublic, @RequestBody SearchNoteInput input){
-        ListPage<Note> listPage = noteService.searchNoteInfo(input.getNote(), input.getListParam(), isPublic);
+        ListPage<Note> listPage = noteService.searchNoteInfo(new Note(input.getBriefNote()), input.getListParam(), isPublic);
         return new ResponseEntity<>(listPage, HttpStatus.OK);
     }
 
