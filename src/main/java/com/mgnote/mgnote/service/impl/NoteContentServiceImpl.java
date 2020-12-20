@@ -64,6 +64,7 @@ public class NoteContentServiceImpl implements NoteContentService {
             noteContent.setId(noteContentId);
             NoteContent after = EntityUtil.copyProperties(noteContent, content, true);
             noteContentRepository.save(after);
+            return;
         }
         throw new EntityNotExistException("目标笔记内容不存在");
     }

@@ -37,6 +37,7 @@ public class NoteController {
         @ApiResponse(code = 400, message = "Invalid Request")})
     public HttpEntity<?> addNote(@ApiParam(value = "笔记信息", required = true) @Validated @RequestBody AddNoteInput input){
         if(input!=null){
+            input.getNote().getContents().clear();
             String id;
             List<String> ids = noteContentService.addNoteContents(input.getNoteContents());
             if(input.getUserId()!=null) {
@@ -97,7 +98,7 @@ public class NoteController {
     public ResponseEntity<?> addNoteContent(@PathVariable String noteId, @RequestBody List<NoteContent> noteContents){
         List<String> ids = noteContentService.addNoteContents(noteContents);
         noteService.addNoteContentsInNote(noteId, ids);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(ids, HttpStatus.OK);
     }
 
     @ApiOperation("搜索符合条件的笔记")

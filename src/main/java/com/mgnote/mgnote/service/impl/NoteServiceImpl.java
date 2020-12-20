@@ -106,12 +106,13 @@ public class NoteServiceImpl implements NoteService {
         if(opt.isPresent()){
             note.setId(noteId);
             Note after = EntityUtil.copyProperties(note, opt.get(), true);
-            after.setDeleted(false);
+            after.setDeleted(opt.get().getDeleted());
             after.setUpdatedAt(new Date());
             noteRepository.save(after);
             if(!after.getTopic().equals(note.getTopic())){
                 updateInPrev(after);
             }
+            return;
         }
         throw new EntityNotExistException("符合id的笔记不存在");
     }
