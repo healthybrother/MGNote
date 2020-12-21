@@ -2,6 +2,7 @@ package com.mgnote.mgnote.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.mgnote.mgnote.exception.CommonException;
+import com.mgnote.mgnote.exception.EntityAlreadyExistException;
 import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.BriefUser;
 import com.mgnote.mgnote.model.Directory;
@@ -12,17 +13,20 @@ import com.mgnote.mgnote.service.DirectoryService;
 import com.mgnote.mgnote.service.UserService;
 import com.mgnote.mgnote.util.EntityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private DirectoryRepository directoryRepository;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository, DirectoryRepository directoryRepository){
         this.userRepository = userRepository;
+        this.directoryRepository = directoryRepository;
     }
 
     //todo 要不要做个邮箱登录
@@ -55,14 +59,15 @@ public class UserServiceImpl implements UserService {
         String inputMail = user.getMail();
         Optional<User> opt1 = userRepository.findByUserName(inputUserName);
         Optional<User> opt2 = userRepository.findByMail(inputMail);
-        if(opt1.isPresent())throw new CommonException(403,"用户名已存在");
-        if(opt2.isPresent())throw new CommonException(404,"邮箱已被注册");
+        if(opt1.isPresent())throw new EntityAlreadyExistException("用户名已存在");
+        if(opt2.isPresent())throw new EntityAlreadyExistException("邮箱已被注册");
         String id = UUID.randomUUID().toString();
         user.setId(id);
         EntityUtil.copyProperties(new User(), user, true);
         userRepository.save(user);
         Directory root = new Directory();
         root.setUserId(id);
+        root.setId(UUID.randomUUID().toString());
         directoryRepository.save(root);
         return id;
     }
@@ -108,7 +113,7 @@ public class UserServiceImpl implements UserService {
         User focus = opt1.get();
         BriefUser briefFoused = new BriefUser(opt2.get());
         List<BriefUser> friends = focus.getFriends();
-        if(friends.contains(briefFoused))throw new CommonException(402,"已关注该用户");//已关注则直接跳出，应该抛出异常
+        if(friends.contains(briefFoused))throw new EntityAlreadyExistException("已关注该用户");//已关注则直接跳出，应该抛出异常
         friends.add(briefFoused);
         focus.setFriends(friends);
         userRepository.save(focus);
@@ -122,6 +127,7 @@ public class UserServiceImpl implements UserService {
             user.setId(userId);
             User updated = EntityUtil.copyProperties(user, opt.get(), true);
             userRepository.save(updated);
+            return;
         }throw new EntityNotExistException("符合用户名的用户不存在");
     }
 }
