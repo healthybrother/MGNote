@@ -1,110 +1,99 @@
 package com.mgnote.mgnote.service;
 
-import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.Note;
-import com.mgnote.mgnote.model.NoteContent;
-import com.mgnote.mgnote.model.dto.GetNoteOutput;
-import com.mgnote.mgnote.model.dto.ListPage;
-import com.mgnote.mgnote.model.dto.ListParam;
-import org.springframework.data.domain.Page;
+import com.mgnote.mgnote.model.SubNote;
 
 import java.util.List;
 
 public interface NoteService {
 
     /**
-     * 在笔记本中添加新的笔记
-     * @param userId 用户id
-     * @param noteBookId 笔记本id
-     * @param note 笔记信息
-     * @param noteContents 笔记内容列表
-     * @return 生成的笔记id（UUID）
+     * 在subNote中添加一个subNote， 即添加一个二级及以上的subNote
+     * @param noteId 所要添加的subNote所在的subNote所在的Note的id
+     * @param subNoteId 所要添加的subNote所在的subNote的id
+     * @param subNote 所要添加的subNote
+     * @return 新添加subNote的id
      */
-    String addNote(String userId, String noteBookId, Note note, List<String> noteContents);
+    String addSubNote(String noteId, String subNoteId, SubNote subNote);
 
     /**
-     * 在笔记下面添加子笔记
-     * @param noteId 父笔记id
-     * @param note 笔记信息
-     * @param noteContents 笔记内容列表
-     * @return 生成的笔记id（UUID）
+     * 在note中添加一个subNote，即添加一个一级的subNote
+     * @param noteId 所要添加的subNote所在的subNote的id
+     * @param subNote 所要添加的subNote
+     * @return 新添加subNote的id
      */
-    String addSubNote(String noteId, Note note, List<String> noteContents);
+    String addSubNote(String noteId, SubNote subNote);
 
     /**
-     * 根据笔记id获取笔记信息
-     * @param noteId 笔记信息的id
-     * @return 笔记信息（不包括内容）
-     * @throws EntityNotExistException 符合id的note不存在时抛出异常
+     * 通过noteId获取note
+     * @param noteId noteId
+     * @return 获取的note
      */
-    Note getNoteInfoById(String noteId) throws EntityNotExistException;
+    Note getNoteById(String noteId);
 
     /**
-     * 根据id获取笔记信息以及内容
-     * @param id 笔记信息以及笔记内容的id
-     * @return 笔记（包括信息以及内容）
+     * 通过subNoteId和noteId获取subNote
+     * @param noteId noteId
+     * @param subNoteId subNoteId
+     * @return 获取的subNote
      */
-    GetNoteOutput getNoteById(String id);
+    SubNote getSubNoteById(String noteId, String subNoteId);
 
     /**
-     * 根据id列表获取笔记信息列表
-     * @param ids 笔记信息id列表
-     * @return 笔记信息列表
+     * 通过noteId获取subNote列表
+     * @param noteId noteId
+     * @return subNote列表
      */
-    List<Note> getNotesById(List<String> ids);
+    List<SubNote> getSubNoteListByNoteId(String noteId);
 
     /**
-     * 根据笔记id更新笔记信息
-     * @param noteId 笔记信息的id
-     * @param note 笔记的信息
+     * 更新note，不允许通过此方法添加subNote
+     * @param noteId 将要更新的noteId
+     * @param note 更新的note
      */
-    void updateNoteInfoById(String noteId, Note note);
+    void updateNoteById(String noteId, Note note);
 
     /**
-     * 根据笔记信息的id进行软删除（设置deleted）
-     * @param noteId 笔记信息的id
+     * 根据noteId和subNoteId更新subNote,不允许通过此方法添加subNote
+     * @param noteId 将要更新的subNote所在的noteId
+     * @param subNoteId 将要更新的subNoteId
+     * @param subNote 更新的subNote
      */
-    void deleteNoteSoft(String noteId);
+    void updateSubNoteById(String noteId, String subNoteId, SubNote subNote);
 
     /**
-     * 根据笔记信息的id进行删除，同时删除笔记内容
-     * @param noteId 笔记信息的id
+     * 删除note(软删除?)
+     * @param noteId noteId
      */
     void deleteNote(String noteId);
 
     /**
-     * 根据id更新笔记信息以及笔记内容
-     * @param id 笔记id
-     * @param note 笔记信息
+     * 批量删除note
+     * @param noteIdList noteId列表
      */
-    void updateNoteById(String id, Note note);
+    void deleteNoteBatch(List<String> noteIdList);
 
     /**
-     * 公开笔记
-     * @param noteId 笔记id
-     * @param isPublic 是否公开
+     * 删除subNote(软删除?)
+     * @param noteId noteId
+     * @param subNoteId subNoteId
      */
-    void setNotePublic(String noteId, Boolean isPublic);
+    void deleteSubNote(String noteId, String subNoteId);
 
     /**
-     * 根据id列表批删除笔记（硬删除）
-     * @param ids 笔记id列表
+     * 批量删除subNote
+     * @param noteId noteId
+     * @param subNoteIdList subNoteId列表
      */
-    void deleteNoteBatch(List<String> ids);
+    void deleteSubNoteBatch(String noteId, List<String> subNoteIdList);
 
     /**
-     * 模糊搜索并分页查询笔记信息
-     * @param note 模糊搜索需要匹配的信息
-     * @param listParam 分页参数
-     * @param isPublic 是否公开
-     * @return 分页后的笔记信息
+     * 搜索subNote,需指定noteId.  subNoteId可为空,为空时表示在整个note中搜索,不为空时表示在指定subNote中搜索
+     * @param noteId noteId
+     * @param subNoteId subNoteId
+     * @param pattern 匹配模式
      */
-    ListPage<Note> searchNoteInfo(Note note, ListParam listParam, Boolean isPublic);
+    void searchSubNote(String noteId, String subNoteId, String pattern);
 
-    /**
-     * 在笔记中新增笔记内容
-     * @param noteId 笔记id
-     * @param noteContents 笔记内容列表
-     */
-    void addNoteContentsInNote(String noteId, List<String> noteContents);
+
 }

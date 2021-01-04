@@ -1,6 +1,5 @@
 package com.mgnote.mgnote.controller;
 
-import com.mgnote.mgnote.service.NoteContentService;
 import com.mgnote.mgnote.service.NoteService;
 import com.mgnote.mgnote.service.UserService;
 import com.mgnote.mgnote.model.User;
@@ -17,14 +16,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/user")
 public class UserController {
     private UserService userService;
-    private NoteService noteService;
-    private NoteContentService noteContentService;
 
     @Autowired
-    public UserController(UserService userService, NoteService noteService, NoteContentService noteContentService){
+    public UserController(UserService userService){
         this.userService = userService;
-        this.noteService = noteService;
-        this.noteContentService = noteContentService;
     }
 
     @ApiOperation("输入用户信息注册")

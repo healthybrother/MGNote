@@ -1,20 +1,15 @@
-package com.mgnote.mgnote.model;
+package com.mgnote.mgnote.model.dto;
 
-public class BriefDirectory {
+public class BriefNote {
     private String id;
     private String name;
 
-    public BriefDirectory(String id, String name) {
+    public BriefNote() {
+    }
+
+    public BriefNote(String id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public BriefDirectory() {
-    }
-
-    public BriefDirectory(Directory directory){
-        this.id = directory.getId();
-        this.name = directory.getName();
     }
 
     public String getId() {
@@ -35,7 +30,7 @@ public class BriefDirectory {
 
     @Override
     public String toString() {
-        return "BriefDirectory{" +
+        return "BriefNote{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 '}';

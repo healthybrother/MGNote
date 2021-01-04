@@ -6,8 +6,6 @@ import org.springframework.data.domain.ExampleMatcher;
 
 public class ExampleUtil {
     public static Example<Note> getNoteExample(Note note, Boolean isPublic){
-        note.setDeleted(false);
-        note.setPublic(isPublic);
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
                 .withIgnoreNullValues()
