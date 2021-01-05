@@ -4,11 +4,13 @@ import com.google.common.base.Preconditions;
 import com.mgnote.mgnote.exception.EntityNotExistException;
 import com.mgnote.mgnote.model.Note;
 import com.mgnote.mgnote.model.NoteBook;
+import com.mgnote.mgnote.model.ShareNote;
 import com.mgnote.mgnote.model.SubNote;
 import com.mgnote.mgnote.model.dto.BriefNote;
 import com.mgnote.mgnote.model.dto.ListParam;
 import com.mgnote.mgnote.repository.NoteBookRepository;
 import com.mgnote.mgnote.repository.NoteRepository;
+import com.mgnote.mgnote.repository.ShareNoteRepository;
 import com.mgnote.mgnote.repository.SubNoteRepository;
 import com.mgnote.mgnote.service.NoteService;
 import com.mgnote.mgnote.util.EntityUtil;
@@ -32,12 +34,14 @@ public class NoteServiceImpl implements NoteService {
     private NoteRepository noteRepository;
     private SubNoteRepository subNoteRepository;
     private NoteBookRepository noteBookRepository;
+    private ShareNoteRepository shareNoteRepository;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository, SubNoteRepository subNoteRepository, NoteBookRepository noteBookRepository){
+    public NoteServiceImpl(NoteRepository noteRepository, SubNoteRepository subNoteRepository, NoteBookRepository noteBookRepository, ShareNoteRepository shareNoteRepository){
         this.noteRepository = noteRepository;
         this.subNoteRepository = subNoteRepository;
         this.noteBookRepository = noteBookRepository;
+        this.shareNoteRepository = shareNoteRepository;
     }
 
     @Override
@@ -146,6 +150,14 @@ public class NoteServiceImpl implements NoteService {
         Preconditions.checkNotNull(path, "未输入匹配路径");
         List<SubNote> list = subNoteRepository.findAllByPathRegex(path);
         return list;
+    }
+
+    @Override
+    public Page<ShareNote> searchShareNotes(ShareNote shareNote, ListParam listParam) {
+        Preconditions.checkNotNull(shareNote, "未输入筛选信息");
+        Preconditions.checkNotNull(listParam, "未输入分页信息");
+        Example<ShareNote> example = ExampleUtil.getShareNoteExample(shareNote);
+        return shareNoteRepository.findAll(example, ListUtil.getPageableByListParam(listParam));
     }
 
     private void updateNameInNoteBook(String notebookId, String noteId, String name){

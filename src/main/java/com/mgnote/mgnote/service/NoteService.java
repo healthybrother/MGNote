@@ -1,6 +1,7 @@
 package com.mgnote.mgnote.service;
 
 import com.mgnote.mgnote.model.Note;
+import com.mgnote.mgnote.model.ShareNote;
 import com.mgnote.mgnote.model.SubNote;
 import com.mgnote.mgnote.model.dto.ListParam;
 import org.springframework.data.domain.Page;
@@ -84,4 +85,6 @@ public interface NoteService {
     Page<SubNote> searchSubNote(SubNote pattern, ListParam listParam);
 
     List<SubNote> matchPathSubNotes(String path);
+
+    Page<ShareNote> searchShareNotes(ShareNote shareNote, ListParam listParam);
 }
