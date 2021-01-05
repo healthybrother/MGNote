@@ -1,16 +1,18 @@
 package com.mgnote.mgnote.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class AbstractDirectory {
+@Document(collection = "directory")
+public class BriefDirectory {
     @Id
     private String id;
     private String name;
     private boolean del;
 
-    public AbstractDirectory(){}
+    public BriefDirectory(){}
 
-    public AbstractDirectory(String id, String name, boolean del) {
+    public BriefDirectory(String id, String name, boolean del) {
         this.id = id;
         this.name = name;
         this.del = del;

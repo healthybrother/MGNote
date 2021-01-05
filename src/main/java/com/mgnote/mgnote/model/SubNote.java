@@ -1,8 +1,11 @@
 package com.mgnote.mgnote.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Date;
 import java.util.List;
 
+@Document(collection = "note")
 public class SubNote extends AbstractNote{
     private List<SubNote> subNoteList;
 

@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 import java.util.List;
 
-@Document(collection = "ShareNote")
+@Document(collection = "share_note")
 public class ShareNote extends AbstractNote {
     private String userId;
     private String userName;

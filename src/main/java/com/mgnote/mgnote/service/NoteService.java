@@ -6,18 +6,10 @@ import com.mgnote.mgnote.model.SubNote;
 import java.util.List;
 
 public interface NoteService {
+    String addNote(Note note);
 
     /**
      * 在subNote中添加一个subNote， 即添加一个二级及以上的subNote
-     * @param noteId 所要添加的subNote所在的subNote所在的Note的id
-     * @param subNoteId 所要添加的subNote所在的subNote的id
-     * @param subNote 所要添加的subNote
-     * @return 新添加subNote的id
-     */
-    String addSubNote(String noteId, String subNoteId, SubNote subNote);
-
-    /**
-     * 在note中添加一个subNote，即添加一个一级的subNote
      * @param noteId 所要添加的subNote所在的subNote的id
      * @param subNote 所要添加的subNote
      * @return 新添加subNote的id
@@ -94,6 +86,4 @@ public interface NoteService {
      * @param pattern 匹配模式
      */
     void searchSubNote(String noteId, String subNoteId, String pattern);
-
-
 }

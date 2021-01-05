@@ -5,24 +5,44 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 import java.util.List;
 
-@Document(collection = "Note")
+@Document(collection = "note")
 public class Note extends AbstractNote{
-    private List<SubNote> subNoteList;
+    private List<String> subNoteList;
+    private static final Note newNote;
+
+    static {
+        newNote = new Note();
+        newNote.setDel(false);
+        newNote.setCreateTime(new Date());
+        newNote.setUpdateTime(new Date());
+    }
 
     public Note() {
     }
 
-    public Note(String id, String name, String content, Date createTime, boolean del, Date updateTime, List<SubNote> subNoteList) {
+    public Note(List<String> subNoteList) {
+        this.subNoteList = subNoteList;
+    }
+
+    public Note(String id, String name, String content, Date createTime, Date updateTime, boolean del, List<String> subNoteList) {
         super(id, name, content, createTime, updateTime, del);
         this.subNoteList = subNoteList;
     }
 
-    public List<SubNote> getSubNoteList() {
+    public static Note getNewNote(){return newNote;}
+
+    public List<String> getSubNoteList() {
         return subNoteList;
     }
 
-    public void setSubNoteList(List<SubNote> subNoteList) {
+    public void setSubNoteList(List<String> subNoteList) {
         this.subNoteList = subNoteList;
+    }
+
+    public void init(){
+        setDel(false);
+        setCreateTime(new Date());
+        setUpdateTime(new Date());
     }
 
     @Override
