@@ -82,4 +82,6 @@ public interface NoteService {
      * @param pattern 匹配模式
      */
     Page<SubNote> searchSubNote(SubNote pattern, ListParam listParam);
+
+    List<SubNote> matchPathSubNotes(String path);
 }

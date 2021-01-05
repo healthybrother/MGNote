@@ -141,6 +141,13 @@ public class NoteServiceImpl implements NoteService {
         return page;
     }
 
+    @Override
+    public List<SubNote> matchPathSubNotes(String path) {
+        Preconditions.checkNotNull(path, "未输入匹配路径");
+        List<SubNote> list = subNoteRepository.findAllByPathRegex(path);
+        return list;
+    }
+
     private void updateNameInNoteBook(String notebookId, String noteId, String name){
         Preconditions.checkNotNull(notebookId, "未输入笔记本id");
         Optional<NoteBook> opt = noteBookRepository.findById(notebookId);
