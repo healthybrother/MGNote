@@ -1,5 +1,6 @@
 package com.mgnote.mgnote.model;
 
+import com.mgnote.mgnote.model.dto.BriefNote;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -7,21 +8,25 @@ import java.util.List;
 
 @Document(collection = "note")
 public class SubNote extends AbstractNote{
-    private List<SubNote> subNoteList;
+    private List<BriefNote> subNoteList;
 
     public SubNote() {
     }
 
-    public SubNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, List<SubNote> subNoteList) {
+    public SubNote(List<BriefNote> subNoteList) {
+        this.subNoteList = subNoteList;
+    }
+
+    public SubNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, List<BriefNote> subNoteList) {
         super(id, name, content, createTime, updateTime, del);
         this.subNoteList = subNoteList;
     }
 
-    public List<SubNote> getSubNoteList() {
+    public List<BriefNote> getSubNoteList() {
         return subNoteList;
     }
 
-    public void setSubNoteList(List<SubNote> subNoteList) {
+    public void setSubNoteList(List<BriefNote> subNoteList) {
         this.subNoteList = subNoteList;
     }
 
