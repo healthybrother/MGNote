@@ -48,8 +48,9 @@ public class NoteServiceImpl implements NoteService {
     public String addSubNote(String path, SubNote note) {
         Preconditions.checkNotNull(path, "未输入路径信息");
         Preconditions.checkNotNull(note, "未输入笔记信息");
-        String id = Arrays.toString(UUID.randomUUID().toString().split("-"));
+        String id = String.join("", UUID.randomUUID().toString().split("-"));
         note.setId(id);
+        note.setPath(path);
         SubNote after = EntityUtil.copyProperties(SubNote.getNewSubNote(), note, true);
         subNoteRepository.save(after);
         return id;
@@ -146,9 +147,14 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<SubNote> matchPathSubNotes(String path) {
+    public List<SubNote> matchPathSubNotes(String path, boolean all) {
         Preconditions.checkNotNull(path, "未输入匹配路径");
-        List<SubNote> list = subNoteRepository.findAllByPathRegex(path);
+        List<SubNote> list;
+        if(!all) list = subNoteRepository.findAllByPathRegex(path);
+        else{
+            String regex = "^"+path;
+            list = subNoteRepository.findAllByPathRegex(regex);
+        }
         return list;
     }
 
@@ -158,6 +164,21 @@ public class NoteServiceImpl implements NoteService {
         Preconditions.checkNotNull(listParam, "未输入分页信息");
         Example<ShareNote> example = ExampleUtil.getShareNoteExample(shareNote);
         return shareNoteRepository.findAll(example, ListUtil.getPageableByListParam(listParam));
+    }
+
+    @Override
+    public Page<Note> searchNotes(Note note, ListParam listParam) {
+        Preconditions.checkNotNull(note, "未输入筛选信息");
+        Preconditions.checkNotNull(listParam, "未输入分页信息");
+        Example<Note> example = ExampleUtil.getNoteExample(note);
+        return noteRepository.findAll(example, ListUtil.getPageableByListParam(listParam));
+    }
+
+    @Override
+    public Page<Note> search(String keyword, ListParam listParam) {
+        Preconditions.checkNotNull(keyword, "未输入搜索关键词");
+        Preconditions.checkNotNull(listParam, "未输入分页信息");
+        return null;
     }
 
     private void updateNameInNoteBook(String notebookId, String noteId, String name){

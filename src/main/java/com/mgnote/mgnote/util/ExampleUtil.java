@@ -7,7 +7,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
 public class ExampleUtil {
-    public static Example<Note> getNoteExample(Note note, Boolean isPublic){
+    public static Example<Note> getNoteExample(Note note){
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
                 .withIgnoreNullValues()

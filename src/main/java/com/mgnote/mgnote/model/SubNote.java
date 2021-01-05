@@ -17,7 +17,7 @@ public class SubNote{
     private Date createTime;
     private Date updateTime;
     private boolean del;
-    @Indexed
+    @Indexed(name = "path")
     private String path;
     private String note;
 

@@ -84,7 +84,11 @@ public interface NoteService {
      */
     Page<SubNote> searchSubNote(SubNote pattern, ListParam listParam);
 
-    List<SubNote> matchPathSubNotes(String path);
+    List<SubNote> matchPathSubNotes(String path, boolean all);
 
     Page<ShareNote> searchShareNotes(ShareNote shareNote, ListParam listParam);
+
+    Page<Note> searchNotes(Note note, ListParam listParam);
+
+    Page<Note> search(String keyword, ListParam listParam);
 }
