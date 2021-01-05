@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 //TODO：添加token身份认证
 @Service
@@ -138,13 +139,15 @@ public class ShareNoteServiceImpl implements ShareNoteService {
         if(opt.isPresent()){
             ShareNote shareNote = opt.get();
             List<Comment> comments = shareNote.getCommentList();
-            for(Iterator<Comment> iterator=comments.listIterator();iterator.hasNext();){
-                Comment comment = iterator.next();
-                if(comment.getId().equals(id)){
-                    iterator.remove();
-                    break;
-                }
-            }
+//            for(Iterator<Comment> iterator=comments.listIterator();iterator.hasNext();){
+//                Comment comment = iterator.next();
+//                if(comment.getId().equals(id)){
+//                    iterator.remove();
+//                    break;
+//                }
+//            }
+            comments = comments.stream().filter(comment -> !id.equals(comment.getId())).collect(Collectors.toList());
+            shareNote.setCommentList(comments);
             shareNoteRepository.save(shareNote);
         }
         else throw new EntityNotExistException("分享笔记不存在");
