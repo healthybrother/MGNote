@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 @Document(collection = "share_note")
-public class ShareNote extends AbstractNote {
+public class ShareNote{
     private String userId;
     private String userName;
     private String describe;
@@ -17,8 +17,7 @@ public class ShareNote extends AbstractNote {
     public ShareNote() {
     }
 
-    public ShareNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, String userId, String userName, String describe, List<Comment> commentList, String avatarUrl, String noteId) {
-        super(id, name, content, createTime, updateTime, del);
+    public ShareNote(String userId, String userName, String describe, List<Comment> commentList, String avatarUrl, String noteId) {
         this.userId = userId;
         this.userName = userName;
         this.describe = describe;
@@ -33,6 +32,14 @@ public class ShareNote extends AbstractNote {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getDescribe() {
@@ -67,29 +74,15 @@ public class ShareNote extends AbstractNote {
         this.noteId = noteId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     @Override
     public String toString() {
         return "ShareNote{" +
-                "id='" + getId() + '\'' +
-                ", userId='" + getUserId() + '\'' +
-                ", name='" + getName() + '\'' +
-                ", content='" + getContent() + '\'' +
-                ", userId='" + userId + '\'' +
+                "userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
                 ", describe='" + describe + '\'' +
                 ", commentList=" + commentList +
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", noteId='" + noteId + '\'' +
-                ", createTime=" + getCreateTime() +
-                ", updateTime=" + getUpdateTime() +
-                ", del=" + isDel() +
                 '}';
     }
 }

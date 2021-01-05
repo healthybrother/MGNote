@@ -1,26 +1,29 @@
 package com.mgnote.mgnote.model;
 
+import com.mgnote.mgnote.model.dto.BriefNote;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collection = "note_book")
+@Document(collection = "notebook")
 public class NoteBook{
     @Id
     private String id;
     private String name;
     private boolean del;
-    private List<String> noteIdList;
+    private List<BriefNote> noteIdList;
+    private String path;
 
     public NoteBook() {
     }
 
-    public NoteBook(String id, String name, boolean del, List<String> noteIdList) {
+    public NoteBook(String id, String name, boolean del, List<BriefNote> noteIdList, String path) {
         this.id = id;
         this.name = name;
         this.del = del;
         this.noteIdList = noteIdList;
+        this.path = path;
     }
 
     public String getId() {
@@ -47,20 +50,30 @@ public class NoteBook{
         this.del = del;
     }
 
-    public List<String> getNoteIdList() {
+    public List<BriefNote> getNoteIdList() {
         return noteIdList;
     }
 
-    public void setNoteIdList(List<String> noteIdList) {
+    public void setNoteIdList(List<BriefNote> noteIdList) {
         this.noteIdList = noteIdList;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override
     public String toString() {
         return "NoteBook{" +
-                "id='" + this.getId() + '\'' +
-                ", name='" + this.getName() + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", del=" + del +
                 ", noteIdList=" + noteIdList +
+                ", path='" + path + '\'' +
                 '}';
     }
 }

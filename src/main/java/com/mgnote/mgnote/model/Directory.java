@@ -11,17 +11,15 @@ public class Directory{
     private String id;
     private String name;
     private boolean del;
-    private List<BriefDirectory> directoryList;
-    private List<BriefDirectory> noteBookList;
+    private String path;
 
     public Directory(){}
 
-    public Directory(String id, String name, boolean del, List<BriefDirectory> directoryList, List<BriefDirectory> noteBookList) {
+    public Directory(String id, String name, boolean del, String path) {
         this.id = id;
         this.name = name;
         this.del = del;
-        this.directoryList = directoryList;
-        this.noteBookList = noteBookList;
+        this.path = path;
     }
 
     public String getId() {
@@ -48,29 +46,21 @@ public class Directory{
         this.del = del;
     }
 
-    public List<BriefDirectory> getDirectoryList() {
-        return directoryList;
+    public String getPath() {
+        return path;
     }
 
-    public void setDirectoryList(List<BriefDirectory> directoryList) {
-        this.directoryList = directoryList;
-    }
-
-    public List<BriefDirectory> getNoteBookList() {
-        return noteBookList;
-    }
-
-    public void setNoteBookList(List<BriefDirectory> noteBookList) {
-        this.noteBookList = noteBookList;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override
     public String toString() {
         return "Directory{" +
-                "id='" + getId() + '\'' +
-                ", name='" + getName() + '\'' +
-                ", directoryList=" + directoryList +
-                ", noteBookList=" + noteBookList +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", del=" + del +
+                ", path='" + path + '\'' +
                 '}';
     }
 }
