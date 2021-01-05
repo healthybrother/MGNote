@@ -20,6 +20,12 @@ public class Comment {
         this.createTime = createTime;
     }
 
+    public Comment(BriefUser briefUser){
+        this.avatarUrl = briefUser.getAvatarUrl();
+        this.userName = briefUser.getUserName();
+        this.createTime = new Date();
+    }
+
     public String getUserName() {
         return userName;
     }

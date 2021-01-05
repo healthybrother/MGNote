@@ -20,9 +20,10 @@ public class SubNote{
     @Indexed(name = "path")
     private String path;
     private String note;
+    private String userId;
 
-    private static SubNote newSubNote;
-    private static SubNote updateSubNote;
+    private static final SubNote newSubNote;
+    private static final SubNote updateSubNote;
 
     static {
         newSubNote = new SubNote();
@@ -42,7 +43,7 @@ public class SubNote{
     public SubNote() {
     }
 
-    public SubNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, String note) {
+    public SubNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, String note, String userId) {
         this.id = id;
         this.name = name;
         this.content = content;
@@ -50,6 +51,7 @@ public class SubNote{
         this.updateTime = updateTime;
         this.del = del;
         this.note = note;
+        this.userId = userId;
     }
 
     public String getId() {
@@ -114,6 +116,14 @@ public class SubNote{
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

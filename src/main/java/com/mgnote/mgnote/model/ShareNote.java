@@ -1,29 +1,56 @@
 package com.mgnote.mgnote.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
 import java.util.List;
 
 @Document(collection = "share_note")
 public class ShareNote{
+    @Id
+    private String id;
     private String userId;
     private String userName;
     private String describe;
     private List<Comment> commentList;
     private String avatarUrl;
     private String noteId;
+    private Boolean del;
 
     public ShareNote() {
     }
 
-    public ShareNote(String userId, String userName, String describe, List<Comment> commentList, String avatarUrl, String noteId) {
+    public ShareNote(String id, String userId, String userName, String describe, List<Comment> commentList, String avatarUrl, String noteId, Boolean del) {
+        this.id = id;
         this.userId = userId;
         this.userName = userName;
         this.describe = describe;
         this.commentList = commentList;
         this.avatarUrl = avatarUrl;
         this.noteId = noteId;
+        this.del = del;
+    }
+
+    public ShareNote(User user, Note note){
+        this.avatarUrl = user.getAvatarUrl();
+        this.userName = user.getUserName();
+        this.userId = user.getId();
+        this.noteId = note.getId();
+    }
+
+    public ShareNote(User user, SubNote note){
+        this.avatarUrl = user.getAvatarUrl();
+        this.userName = user.getUserName();
+        this.userId = user.getId();
+        this.noteId = note.getId();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -72,6 +99,14 @@ public class ShareNote{
 
     public void setNoteId(String noteId) {
         this.noteId = noteId;
+    }
+
+    public Boolean getDel() {
+        return del;
+    }
+
+    public void setDel(Boolean del) {
+        this.del = del;
     }
 
     @Override

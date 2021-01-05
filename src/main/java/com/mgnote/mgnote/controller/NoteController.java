@@ -5,6 +5,7 @@ import com.mgnote.mgnote.model.ShareNote;
 import com.mgnote.mgnote.model.SubNote;
 import com.mgnote.mgnote.model.dto.SearchShareNoteInput;
 import com.mgnote.mgnote.service.NoteService;
+import com.mgnote.mgnote.service.ShareNoteService;
 import com.mgnote.mgnote.util.ListUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,13 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/note")
 public class NoteController {
-    private NoteService noteService;
+    private final NoteService noteService;
+    private final ShareNoteService shareNoteService;
 
     @Autowired
-    public NoteController(NoteService noteService){
+    public NoteController(NoteService noteService, ShareNoteService shareNoteService){
         this.noteService = noteService;
+        this.shareNoteService = shareNoteService;
     }
 
     @GetMapping("/get/note/{noteId}")
@@ -110,7 +113,7 @@ public class NoteController {
     @PostMapping("/search/shareNotes")
     public ResponseEntity<?> searchShareNotes(@RequestBody SearchShareNoteInput input){
         if(input.getShareNote()!=null && input.getListParam()!=null){
-            Page<ShareNote> page = noteService.searchShareNotes(input.getShareNote(), input.getListParam());
+            Page<ShareNote> page = shareNoteService.searchShareNotes(input.getShareNote(), input.getListParam());
             Map<String, Object> res = new HashMap<>();
             res.put("shareNotes", page.toList());
             res.put("listParam", ListUtil.getListParamByPage(page));

@@ -2,16 +2,10 @@ package com.mgnote.mgnote.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.mgnote.mgnote.exception.EntityNotExistException;
-import com.mgnote.mgnote.model.Note;
-import com.mgnote.mgnote.model.NoteBook;
-import com.mgnote.mgnote.model.ShareNote;
-import com.mgnote.mgnote.model.SubNote;
+import com.mgnote.mgnote.model.*;
 import com.mgnote.mgnote.model.dto.BriefNote;
 import com.mgnote.mgnote.model.dto.ListParam;
-import com.mgnote.mgnote.repository.NoteBookRepository;
-import com.mgnote.mgnote.repository.NoteRepository;
-import com.mgnote.mgnote.repository.ShareNoteRepository;
-import com.mgnote.mgnote.repository.SubNoteRepository;
+import com.mgnote.mgnote.repository.*;
 import com.mgnote.mgnote.service.NoteService;
 import com.mgnote.mgnote.util.EntityUtil;
 import com.mgnote.mgnote.util.ExampleUtil;
@@ -34,14 +28,12 @@ public class NoteServiceImpl implements NoteService {
     private NoteRepository noteRepository;
     private SubNoteRepository subNoteRepository;
     private NoteBookRepository noteBookRepository;
-    private ShareNoteRepository shareNoteRepository;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository, SubNoteRepository subNoteRepository, NoteBookRepository noteBookRepository, ShareNoteRepository shareNoteRepository){
+    public NoteServiceImpl(NoteRepository noteRepository, SubNoteRepository subNoteRepository, NoteBookRepository noteBookRepository){
         this.noteRepository = noteRepository;
         this.subNoteRepository = subNoteRepository;
         this.noteBookRepository = noteBookRepository;
-        this.shareNoteRepository = shareNoteRepository;
     }
 
     @Override
@@ -85,7 +77,7 @@ public class NoteServiceImpl implements NoteService {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
         Preconditions.checkNotNull(note, "未输入笔记信息");
         Optional<Note> opt = noteRepository.findById(noteId);
-        if(opt.isPresent() && !opt.get().isDel()){
+        if(opt.isPresent() && !opt.get().getDel()){
             Note note1 = opt.get();
             if(note.getName()!=null && note1.getName().equals(note.getName())) updateNameInNoteBook(noteBook, noteId, note.getName());
             note = EntityUtil.copyProperties(Note.getUpdateNote(), note, false);
@@ -156,14 +148,6 @@ public class NoteServiceImpl implements NoteService {
             list = subNoteRepository.findAllByPathRegex(regex);
         }
         return list;
-    }
-
-    @Override
-    public Page<ShareNote> searchShareNotes(ShareNote shareNote, ListParam listParam) {
-        Preconditions.checkNotNull(shareNote, "未输入筛选信息");
-        Preconditions.checkNotNull(listParam, "未输入分页信息");
-        Example<ShareNote> example = ExampleUtil.getShareNoteExample(shareNote);
-        return shareNoteRepository.findAll(example, ListUtil.getPageableByListParam(listParam));
     }
 
     @Override

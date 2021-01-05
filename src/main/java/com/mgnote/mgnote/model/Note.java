@@ -17,6 +17,7 @@ public class Note{
     private Date updateTime;
     private Boolean del;
     private String notebook;
+    private String userId;
 
     private static final Note newNote;
     private static final Note updateNote;
@@ -37,7 +38,7 @@ public class Note{
 
     public static Note getUpdateNote(){return updateNote;}
 
-    public Note(String id, String name, String content, Date createTime, Date updateTime, boolean del, String notebook) {
+    public Note(String id, String name, String content, Date createTime, Date updateTime, boolean del, String notebook, String userId) {
         this.id = id;
         this.name = name;
         this.content = content;
@@ -45,6 +46,7 @@ public class Note{
         this.updateTime = updateTime;
         this.del = del;
         this.notebook = notebook;
+        this.userId = userId;
     }
 
     public Note() {
@@ -90,20 +92,28 @@ public class Note{
         this.updateTime = updateTime;
     }
 
-    public boolean isDel() {
-        return del;
-    }
-
-    public void setDel(boolean del) {
-        this.del = del;
-    }
-
     public String getNotebook() {
         return notebook;
     }
 
     public void setNotebook(String notebook) {
         this.notebook = notebook;
+    }
+
+    public Boolean getDel() {
+        return del;
+    }
+
+    public void setDel(Boolean del) {
+        this.del = del;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override
