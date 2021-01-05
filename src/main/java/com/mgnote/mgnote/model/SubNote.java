@@ -2,6 +2,7 @@ package com.mgnote.mgnote.model;
 
 import com.mgnote.mgnote.model.dto.BriefNote;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -16,20 +17,38 @@ public class SubNote{
     private Date createTime;
     private Date updateTime;
     private boolean del;
-    private List<BriefNote> subNoteList;
+    @Indexed
+    private String path;
     private String note;
+
+    private static SubNote newSubNote;
+    private static SubNote updateSubNote;
+
+    static {
+        newSubNote = new SubNote();
+        newSubNote.setDel(false);
+        newSubNote.setCreateTime(new Date());
+        newSubNote.setUpdateTime(new Date());
+
+        updateSubNote = new SubNote();
+        updateSubNote.setUpdateTime(new Date());
+        updateSubNote.setDel(false);
+    }
+
+    public static SubNote getNewSubNote(){return newSubNote;}
+
+    public static SubNote getUpdateSubNote(){return updateSubNote;}
 
     public SubNote() {
     }
 
-    public SubNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, List<BriefNote> subNoteList, String note) {
+    public SubNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, String note) {
         this.id = id;
         this.name = name;
         this.content = content;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.del = del;
-        this.subNoteList = subNoteList;
         this.note = note;
     }
 
@@ -81,20 +100,20 @@ public class SubNote{
         this.del = del;
     }
 
-    public List<BriefNote> getSubNoteList() {
-        return subNoteList;
-    }
-
-    public void setSubNoteList(List<BriefNote> subNoteList) {
-        this.subNoteList = subNoteList;
-    }
-
     public String getNote() {
         return note;
     }
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     @Override
@@ -106,7 +125,6 @@ public class SubNote{
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", del=" + del +
-                ", subNoteList=" + subNoteList +
                 ", note='" + note + '\'' +
                 '}';
     }

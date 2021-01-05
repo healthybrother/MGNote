@@ -1,5 +1,7 @@
 package com.mgnote.mgnote.model.dto;
 
+import com.mgnote.mgnote.model.SubNote;
+
 public class BriefNote {
     private String id;
     private String name;
@@ -10,6 +12,11 @@ public class BriefNote {
     public BriefNote(String id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public BriefNote(SubNote subNote){
+        this.id = subNote.getId();
+        this.name = subNote.getName();
     }
 
     public String getId() {

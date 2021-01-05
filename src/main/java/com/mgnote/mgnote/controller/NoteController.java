@@ -21,10 +21,6 @@ public class NoteController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addNote(@RequestBody Note note){
-        if(note!=null){
-            String id = noteService.addNote(note);
-            return new ResponseEntity<>(id, HttpStatus.OK);
-        }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 

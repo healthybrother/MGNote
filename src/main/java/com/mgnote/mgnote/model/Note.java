@@ -15,27 +15,35 @@ public class Note{
     private String content;
     private Date createTime;
     private Date updateTime;
-    private boolean del;
-    private List<BriefNote> subNoteList;
+    private Boolean del;
     private String notebook;
 
     private static final Note newNote;
+    private static final Note updateNote;
 
     static {
         newNote = new Note();
         newNote.setDel(false);
         newNote.setCreateTime(new Date());
         newNote.setUpdateTime(new Date());
+
+        updateNote = new Note();
+        updateNote.setUpdateTime(new Date());
+        updateNote.setCreateTime(null);
+        updateNote.setId(null);
     }
 
-    public Note(String id, String name, String content, Date createTime, Date updateTime, boolean del, List<BriefNote> subNoteList, String notebook) {
+    public static Note getNewNote(){return newNote;}
+
+    public static Note getUpdateNote(){return updateNote;}
+
+    public Note(String id, String name, String content, Date createTime, Date updateTime, boolean del, String notebook) {
         this.id = id;
         this.name = name;
         this.content = content;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.del = del;
-        this.subNoteList = subNoteList;
         this.notebook = notebook;
     }
 
@@ -90,14 +98,6 @@ public class Note{
         this.del = del;
     }
 
-    public List<BriefNote> getSubNoteList() {
-        return subNoteList;
-    }
-
-    public void setSubNoteList(List<BriefNote> subNoteList) {
-        this.subNoteList = subNoteList;
-    }
-
     public String getNotebook() {
         return notebook;
     }
@@ -115,7 +115,6 @@ public class Note{
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", del=" + del +
-                ", subNoteList=" + subNoteList +
                 ", notebook='" + notebook + '\'' +
                 '}';
     }
