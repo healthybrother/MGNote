@@ -47,10 +47,7 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     @Override
     public String addShareNote(String noteId, String description) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
-        Optional<HttpServletRequest> opt = HttpUtil.getRequest();
-        if(!opt.isPresent()) throw new HttpConnectionException();
-        String userId = (String) redisUtil.readCache(RedisUtil.USER_TOKEN.replace("?", opt.get().getHeader("token")));
-        if(userId == null) throw new PermissionException("用户未登录");
+        String userId = getUserId();
         Optional<Note> noteOptional = noteRepository.findById(noteId);
         if(noteOptional.isPresent()){
             Note note = noteOptional.get();
@@ -73,10 +70,7 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     @Override
     public String addShareSubNote(String subNoteId, String description) {
         Preconditions.checkNotNull(subNoteId, "未输入子笔记id");
-        Optional<HttpServletRequest> opt = HttpUtil.getRequest();
-        if(!opt.isPresent()) throw new HttpConnectionException();
-        String userId = (String) redisUtil.readCache(RedisUtil.USER_TOKEN.replace("?", opt.get().getHeader("token")));
-        if(userId == null) throw new PermissionException("用户未登录");
+        String userId = getUserId();
         Optional<SubNote> noteOptional = subNoteRepository.findById(subNoteId);
         if(noteOptional.isPresent()){
             SubNote note = noteOptional.get();
@@ -97,10 +91,10 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     }
 
     @Override
-    public void closeShareNote(String userId, String id) {
-        Preconditions.checkNotNull(userId, "未输入用户id");
+    public void closeShareNote(String id) {
         Preconditions.checkNotNull(id, "未输入分享记录id");
         Optional<ShareNote> opt = shareNoteRepository.findById(id);
+        String userId = getUserId();
         if(opt.isPresent()){
             ShareNote shareNote = opt.get();
             if(shareNote.getUserId().equals(userId)){
@@ -112,10 +106,10 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     }
 
     @Override
-    public void deleteShareNote(String userId, String id) {
-        Preconditions.checkNotNull(userId, "未输入用户id");
+    public void deleteShareNote(String id) {
         Preconditions.checkNotNull(id, "未输入分享记录id");
         Optional<ShareNote> opt = shareNoteRepository.findById(id);
+        String userId = getUserId();
         if(opt.isPresent()){
             ShareNote shareNote = opt.get();
             if(shareNote.getUserId().equals(userId)){
@@ -128,9 +122,13 @@ public class ShareNoteServiceImpl implements ShareNoteService {
 
     @Override
     public String commentShareNote(BriefUser briefUser, String shareNoteId, String content) {
-        Preconditions.checkNotNull(briefUser, "未输入用户信息");
         Preconditions.checkNotNull(shareNoteId, "未输入分享笔记id");
         Preconditions.checkNotNull(content, "未输入评论内容");
+        if(briefUser == null) {
+            String userId = getUserId();
+            User user = userRepository.findById(userId).get();
+            briefUser = new BriefUser(user);
+        }
         Optional<ShareNote> opt = shareNoteRepository.findById(shareNoteId);
         if(opt.isPresent()){
             String id = UUID.randomUUID().toString();
@@ -146,11 +144,12 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     }
 
     @Override
-    public void deleteComment(BriefUser briefUser, String shareNoteId, String id) {
-        Preconditions.checkNotNull(briefUser, "未输入用户信息");
+    public void deleteComment(String shareNoteId, String id) {
         Preconditions.checkNotNull(shareNoteId, "未输入分享笔记id");
         Preconditions.checkNotNull(id, "未输入评论id");
         Optional<ShareNote> opt = shareNoteRepository.findById(shareNoteId);
+        String userId = getUserId();
+        User user = userRepository.findById(userId).get();
         if(opt.isPresent()){
             ShareNote shareNote = opt.get();
             List<Comment> comments = shareNote.getCommentList();
@@ -161,7 +160,7 @@ public class ShareNoteServiceImpl implements ShareNoteService {
 //                    break;
 //                }
 //            }
-            comments = comments.stream().filter(comment -> !id.equals(comment.getId())).collect(Collectors.toList());
+            comments = comments.stream().filter(comment -> !(id.equals(comment.getId())&&userId.equals(user.getUserName()))).collect(Collectors.toList());
             shareNote.setCommentList(comments);
             shareNoteRepository.save(shareNote);
         }
@@ -180,5 +179,13 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     public List<ShareNote> findAllByUserId(String userId) {
         Preconditions.checkNotNull(userId, "未输入用户id");
         return shareNoteRepository.findAllById(userId);
+    }
+
+    private String getUserId(){
+        Optional<HttpServletRequest> opt = HttpUtil.getRequest();
+        if(!opt.isPresent()) throw new HttpConnectionException();
+        String userId = (String) redisUtil.readCache(RedisUtil.USER_TOKEN.replace("?", opt.get().getHeader("token")));
+        if(userId == null) throw new PermissionException("用户未登录");
+        return userId;
     }
 }

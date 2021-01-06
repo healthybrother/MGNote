@@ -1,5 +1,6 @@
 package com.mgnote.mgnote.controller;
 
+import com.mgnote.mgnote.model.BriefUser;
 import com.mgnote.mgnote.model.Note;
 import com.mgnote.mgnote.model.ShareNote;
 import com.mgnote.mgnote.model.SubNote;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +129,51 @@ public class NoteController {
         if(noteId != null && description !=null){
             String id = shareNoteService.addShareNote(noteId, description);
             return new ResponseEntity<>(id, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping ("/add/shareSubNote/{subNoteId}")
+    public ResponseEntity<?> addShareSubNote(@PathVariable String subNoteId,@RequestParam String description){
+        if(subNoteId != null && description !=null){
+            String id = shareNoteService.addShareSubNote(subNoteId, description);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/delete/shareNote/{shareNoteId}")
+    public ResponseEntity<?> deleteShareNote(@PathVariable String shareNoteId){
+        if(shareNoteId != null){
+            shareNoteService.deleteShareNote(shareNoteId);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/close/shareNote/{shareNoteId}")
+    public ResponseEntity<?> closeShareNote(@PathVariable String shareNoteId){
+        if(shareNoteId!=null){
+            shareNoteService.closeShareNote(shareNoteId);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/comment/shareNote/{shareNoteId}")
+    public ResponseEntity<?> commentShareNote(@RequestBody BriefUser user, @PathVariable String shareNoteId, @RequestParam String content){
+        if(shareNoteId!=null && content!=null){
+            String id = shareNoteService.commentShareNote(user, shareNoteId, content);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/delete/comment/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable String commentId, @RequestParam String shareNoteId){
+        if(commentId!=null && shareNoteId!=null){
+            shareNoteService.deleteComment(shareNoteId, commentId);
+            return new ResponseEntity<>(null, HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
