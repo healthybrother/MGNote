@@ -121,4 +121,13 @@ public class NoteController {
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping ("/add/shareNote/{noteId}")
+    public ResponseEntity<?> addShareNote(@PathVariable String noteId,@RequestParam String description){
+        if(noteId != null && description !=null){
+            String id = shareNoteService.addShareNote(noteId, description);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
 }

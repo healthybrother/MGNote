@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class RedisUtil {
-    @Resource(name = "tokenTemplate")
+    @Resource(name = "objectTemplate")
     private RedisTemplate<String, Object> redisTemplate;
     private static final Logger log = LoggerFactory.getLogger(RedisUtil.class);
 
