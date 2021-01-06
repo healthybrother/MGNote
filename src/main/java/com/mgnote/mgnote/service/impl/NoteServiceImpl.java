@@ -17,7 +17,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,7 +39,7 @@ public class NoteServiceImpl implements NoteService {
     public String addSubNote(String path, SubNote note) {
         Preconditions.checkNotNull(path, "未输入路径信息");
         Preconditions.checkNotNull(note, "未输入笔记信息");
-        String id = String.join("", UUID.randomUUID().toString().split("-"));
+        String id = UUID.randomUUID().toString().replaceAll("-", "");
         note.setId(id);
         note.setPath(path);
         SubNote after = EntityUtil.copyProperties(SubNote.getNewSubNote(), note, true);
