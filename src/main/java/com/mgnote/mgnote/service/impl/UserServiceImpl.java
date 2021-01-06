@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mgnote.mgnote.exception.CommonException;
 import com.mgnote.mgnote.exception.EntityAlreadyExistException;
 import com.mgnote.mgnote.exception.EntityNotExistException;
+import com.mgnote.mgnote.exception.HttpConnectionException;
 import com.mgnote.mgnote.model.BriefUser;
 import com.mgnote.mgnote.model.Directory;
 import com.mgnote.mgnote.model.RootDirectory;
@@ -12,9 +13,12 @@ import com.mgnote.mgnote.repository.DirectoryRepository;
 import com.mgnote.mgnote.repository.UserRepository;
 import com.mgnote.mgnote.service.UserService;
 import com.mgnote.mgnote.util.EntityUtil;
+import com.mgnote.mgnote.util.HttpUtil;
+import com.mgnote.mgnote.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,13 +27,14 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private DirectoryRepository directoryRepository;
+    private RedisUtil redisUtil;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, DirectoryRepository directoryRepository){
+    public UserServiceImpl(UserRepository userRepository, DirectoryRepository directoryRepository, RedisUtil redisUtil){
         this.userRepository = userRepository;
         this.directoryRepository = directoryRepository;
+        this.redisUtil = redisUtil;
     }
 
-    //todo 要不要做个邮箱登录
     @Override
     public User loginByName(String userName, String password) {
         Preconditions.checkNotNull(userName, password,"未输入用户名", "未输入用户密码");
@@ -37,6 +42,12 @@ public class UserServiceImpl implements UserService {
         if(!opt.isPresent())throw new EntityNotExistException("符合用户名的用户不存在");
         User toLogin = opt.get();
         if(toLogin.getPassword().equals(password)){
+            Optional<HttpServletResponse> responseOpt = HttpUtil.getResponse();
+            if(!responseOpt.isPresent()) throw new HttpConnectionException();
+            String token = UUID.randomUUID().toString();
+            String key = RedisUtil.USER_TOKEN.replace("?", token);
+            redisUtil.writeCache(key, toLogin.getId());
+            responseOpt.get().setHeader("token", token);
             return toLogin;
         }throw new CommonException(401,"密码错误");
     }
@@ -48,6 +59,12 @@ public class UserServiceImpl implements UserService {
         if(!opt.isPresent())throw new EntityNotExistException("使用该邮箱注册的用户不存在");
         User toLogin = opt.get();
         if(toLogin.getPassword().equals(password)){
+            Optional<HttpServletResponse> responseOpt = HttpUtil.getResponse();
+            if(!responseOpt.isPresent()) throw new HttpConnectionException();
+            String token = UUID.randomUUID().toString();
+            String key = RedisUtil.USER_TOKEN.replace("?", token);
+            redisUtil.writeCache(key, toLogin.getId());
+            responseOpt.get().setHeader("token", token);
             return toLogin;
         }throw new CommonException(401,"密码错误");
     }
@@ -130,4 +147,6 @@ public class UserServiceImpl implements UserService {
             return;
         }throw new EntityNotExistException("符合用户名的用户不存在");
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.mgnote.mgnote.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.mgnote.mgnote.exception.EntityNotExistException;
+import com.mgnote.mgnote.exception.HttpConnectionException;
 import com.mgnote.mgnote.exception.PermissionException;
 import com.mgnote.mgnote.model.*;
 import com.mgnote.mgnote.model.dto.ListParam;
@@ -11,13 +12,15 @@ import com.mgnote.mgnote.repository.SubNoteRepository;
 import com.mgnote.mgnote.repository.UserRepository;
 import com.mgnote.mgnote.service.ShareNoteService;
 import com.mgnote.mgnote.util.ExampleUtil;
+import com.mgnote.mgnote.util.HttpUtil;
 import com.mgnote.mgnote.util.ListUtil;
+import com.mgnote.mgnote.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,22 +33,29 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
     private final SubNoteRepository subNoteRepository;
+    private final RedisUtil redisUtil;
 
     @Autowired
-    public ShareNoteServiceImpl(ShareNoteRepository shareNoteRepository, NoteRepository noteRepository, UserRepository userRepository, SubNoteRepository subNoteRepository) {
+    public ShareNoteServiceImpl(ShareNoteRepository shareNoteRepository, NoteRepository noteRepository, UserRepository userRepository, SubNoteRepository subNoteRepository, RedisUtil redisUtil) {
         this.shareNoteRepository = shareNoteRepository;
         this.noteRepository = noteRepository;
         this.userRepository = userRepository;
         this.subNoteRepository = subNoteRepository;
+        this.redisUtil = redisUtil;
     }
 
     @Override
     public String addShareNote(String noteId, String description) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
+        Optional<HttpServletRequest> opt = HttpUtil.getRequest();
+        if(!opt.isPresent()) throw new HttpConnectionException();
+        String userId = (String) redisUtil.readCache(RedisUtil.USER_TOKEN.replace("?", opt.get().getHeader("token")));
+        if(userId == null) throw new PermissionException("用户未登录");
         Optional<Note> noteOptional = noteRepository.findById(noteId);
         if(noteOptional.isPresent()){
             Note note = noteOptional.get();
-            Optional<User> userOptional = userRepository.findById(note.getUserId());
+            if(!note.getUserId().equals(userId)) throw new PermissionException("用户未登录");
+            Optional<User> userOptional = userRepository.findById(userId);
             if(userOptional.isPresent()){
                 String id = UUID.randomUUID().toString();
                 User user = userOptional.get();
@@ -63,10 +73,15 @@ public class ShareNoteServiceImpl implements ShareNoteService {
     @Override
     public String addShareSubNote(String subNoteId, String description) {
         Preconditions.checkNotNull(subNoteId, "未输入子笔记id");
+        Optional<HttpServletRequest> opt = HttpUtil.getRequest();
+        if(!opt.isPresent()) throw new HttpConnectionException();
+        String userId = (String) redisUtil.readCache(RedisUtil.USER_TOKEN.replace("?", opt.get().getHeader("token")));
+        if(userId == null) throw new PermissionException("用户未登录");
         Optional<SubNote> noteOptional = subNoteRepository.findById(subNoteId);
         if(noteOptional.isPresent()){
             SubNote note = noteOptional.get();
-            Optional<User> userOptional = userRepository.findById(note.getUserId());
+            if(!note.getUserId().equals(userId)) throw new PermissionException("用户未登录");
+            Optional<User> userOptional = userRepository.findById(userId);
             if(userOptional.isPresent()){
                 String id = UUID.randomUUID().toString();
                 User user = userOptional.get();
