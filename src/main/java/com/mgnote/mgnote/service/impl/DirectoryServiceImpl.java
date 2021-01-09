@@ -83,8 +83,8 @@ public class DirectoryServiceImpl implements DirectoryService {
             temp3.remove(targetNoteBook);
             temp3.add(temp1);
             rootDirectory.setNoteBookList(temp3);
-        }else{
-            Directory temp4 = EntityUtil.copyProperties(directoryList.get(directoryList.size()-1), new Directory(), true);
+        } else {
+            Directory temp4 = EntityUtil.copyProperties(directoryList.get(directoryList.size() - 1), new Directory(), true);
             List<NoteBook> temp5 = temp4.getNoteBookList();
             temp5.remove(targetNoteBook);
             temp5.add(temp1);
@@ -112,14 +112,14 @@ public class DirectoryServiceImpl implements DirectoryService {
         noteBook.setId(UUID.randomUUID().toString());
         noteBook.setNoteList(new ArrayList<>());
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<NoteBook> temp2 = temp1.getNoteBookList();
             temp2.add(noteBook);
             temp1.setNoteBookList(temp2);
             saveDirectoryOfPath(rootDirectory, directoryList, temp1);
-        }else{
+        } else {
             List<NoteBook> temp3 = rootDirectory.getNoteBookList();
             temp3.add(noteBook);
             rootDirectory.setNoteBookList(temp3);
@@ -145,14 +145,14 @@ public class DirectoryServiceImpl implements DirectoryService {
         directory.setDirectoryList(new ArrayList<>());
         directory.setNoteBookList(new ArrayList<>());
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<Directory> temp2 = temp1.getDirectoryList();
             temp2.add(directory);
             temp1.setDirectoryList(temp2);
             saveDirectoryOfPath(rootDirectory, directoryList, temp1);
-        }else{
+        } else {
             List<Directory> temp3 = rootDirectory.getDirectoryList();
             temp3.add(directory);
             rootDirectory.setDirectoryList(temp3);
@@ -175,12 +175,12 @@ public class DirectoryServiceImpl implements DirectoryService {
         RootDirectory rootDirectory = getRootDirectoryById(rootDirectoryId);
         List<Directory> directoryList;
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<NoteBook> temp2 = temp1.getNoteBookList();
-            for(NoteBook n : temp2){
-                if(n.getId().equals(id)){
+            for (NoteBook n : temp2) {
+                if (n.getId().equals(id)) {
                     noteBook.setId(n.getId());
                     noteBook.setNoteList(n.getNoteList());
                     temp2.remove(n);
@@ -190,10 +190,10 @@ public class DirectoryServiceImpl implements DirectoryService {
             temp2.add(noteBook);
             temp1.setNoteBookList(temp2);
             saveDirectoryOfPath(rootDirectory, directoryList, temp1);
-        }else{
+        } else {
             List<NoteBook> temp3 = rootDirectory.getNoteBookList();
-            for(NoteBook n : temp3){
-                if(n.getId().equals(id)){
+            for (NoteBook n : temp3) {
+                if (n.getId().equals(id)) {
                     noteBook.setId(n.getId());
                     noteBook.setNoteList(n.getNoteList());
                     temp3.remove(n);
@@ -219,12 +219,12 @@ public class DirectoryServiceImpl implements DirectoryService {
         RootDirectory rootDirectory = getRootDirectoryById(rootDirectoryId);
         List<Directory> directoryList;
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<Directory> temp2 = temp1.getDirectoryList();
-            for(Directory n : temp2){
-                if(n.getId().equals(id)){
+            for (Directory n : temp2) {
+                if (n.getId().equals(id)) {
                     directory.setId(n.getId());
                     directory.setDirectoryList(n.getDirectoryList());
                     directory.setNoteBookList(n.getNoteBookList());
@@ -235,10 +235,10 @@ public class DirectoryServiceImpl implements DirectoryService {
             temp2.add(directory);
             temp1.setDirectoryList(temp2);
             saveDirectoryOfPath(rootDirectory, directoryList, temp1);
-        }else{
+        } else {
             List<Directory> temp3 = rootDirectory.getDirectoryList();
-            for(Directory n : temp3){
-                if(n.getId().equals(id)){
+            for (Directory n : temp3) {
+                if (n.getId().equals(id)) {
                     directory.setId(n.getId());
                     directory.setDirectoryList(n.getDirectoryList());
                     directory.setNoteBookList(n.getNoteBookList());
@@ -284,8 +284,8 @@ public class DirectoryServiceImpl implements DirectoryService {
             throw new EntityNotExistException("找不到路径中笔记本");
         NoteBook temp1 = EntityUtil.copyProperties(targetNoteBook, new NoteBook(), true);
         List<BriefNote> temp2 = null == temp1.getNoteList() ? new ArrayList<>() : temp1.getNoteList();
-        for(BriefNote b: temp2){
-            if(b.getId().equals(briefNote.getId())) {
+        for (BriefNote b : temp2) {
+            if (b.getId().equals(briefNote.getId())) {
                 temp2.remove(b);
                 break;
             }
@@ -298,8 +298,8 @@ public class DirectoryServiceImpl implements DirectoryService {
             temp3.remove(targetNoteBook);
             temp3.add(temp1);
             rootDirectory.setNoteBookList(temp3);
-        }else{
-            Directory temp4 = EntityUtil.copyProperties(directoryList.get(directoryList.size()-1), new Directory(), true);
+        } else {
+            Directory temp4 = EntityUtil.copyProperties(directoryList.get(directoryList.size() - 1), new Directory(), true);
             List<NoteBook> temp5 = temp4.getNoteBookList();
             temp5.remove(targetNoteBook);
             temp5.add(temp1);
@@ -321,18 +321,18 @@ public class DirectoryServiceImpl implements DirectoryService {
         RootDirectory rootDirectory = getRootDirectoryById(rootDirectoryId);
         List<Directory> directoryList;
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<Directory> temp2 = temp1.getDirectoryList();
-            for(Directory d : temp2){
-                if(d.getId().equals(id))
+            for (Directory d : temp2) {
+                if (d.getId().equals(id))
                     return d;
             }
-        }else{
+        } else {
             List<Directory> temp3 = rootDirectory.getDirectoryList();
-            for(Directory d : temp3){
-                if(d.getId().equals(id))
+            for (Directory d : temp3) {
+                if (d.getId().equals(id))
                     return d;
             }
         }
@@ -350,18 +350,18 @@ public class DirectoryServiceImpl implements DirectoryService {
         RootDirectory rootDirectory = getRootDirectoryById(rootDirectoryId);
         List<Directory> directoryList;
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<NoteBook> temp2 = temp1.getNoteBookList();
-            for(NoteBook d : temp2){
-                if(d.getId().equals(id))
+            for (NoteBook d : temp2) {
+                if (d.getId().equals(id))
                     return d;
             }
-        }else{
+        } else {
             List<NoteBook> temp3 = rootDirectory.getNoteBookList();
-            for(NoteBook d : temp3){
-                if(d.getId().equals(id))
+            for (NoteBook d : temp3) {
+                if (d.getId().equals(id))
                     return d;
             }
         }
@@ -381,12 +381,12 @@ public class DirectoryServiceImpl implements DirectoryService {
         List<String> noteIdList = new ArrayList<>();
         NoteBook delete = null;
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<NoteBook> temp2 = temp1.getNoteBookList();
-            for(NoteBook n : temp2){
-                if(n.getId().equals(id)){
+            for (NoteBook n : temp2) {
+                if (n.getId().equals(id)) {
                     delete = n;
                     noteIdList = n.getNoteList().stream().map(BriefNote::getId).collect(Collectors.toList());
                     temp2.remove(n);
@@ -395,10 +395,10 @@ public class DirectoryServiceImpl implements DirectoryService {
             }
             temp1.setNoteBookList(temp2);
             saveDirectoryOfPath(rootDirectory, directoryList, temp1);
-        }else{
+        } else {
             List<NoteBook> temp3 = rootDirectory.getNoteBookList();
-            for(NoteBook n : temp3){
-                if(n.getId().equals(id)){
+            for (NoteBook n : temp3) {
+                if (n.getId().equals(id)) {
                     delete = n;
                     noteIdList = n.getNoteList().stream().map(BriefNote::getId).collect(Collectors.toList());
                     temp3.remove(n);
@@ -407,7 +407,7 @@ public class DirectoryServiceImpl implements DirectoryService {
             }
             rootDirectory.setNoteBookList(temp3);
         }
-        if(null == delete)
+        if (null == delete)
             throw new EntityNotExistException("笔记本不存在");
 
         noteService.deleteNoteBatch(noteIdList);
@@ -427,12 +427,12 @@ public class DirectoryServiceImpl implements DirectoryService {
         List<String> noteIdList;
         Directory delete = null;
 
-        if(idList.size() >= 1){
+        if (idList.size() >= 1) {
             directoryList = getDirectoryOfPath(rootDirectory, idList);
-            Directory temp1 = directoryList.get(directoryList.size()-1);
+            Directory temp1 = directoryList.get(directoryList.size() - 1);
             List<Directory> temp2 = temp1.getDirectoryList();
-            for(Directory n : temp2){
-                if(n.getId().equals(id)){
+            for (Directory n : temp2) {
+                if (n.getId().equals(id)) {
                     delete = n;
                     temp2.remove(n);
                     break;
@@ -440,10 +440,10 @@ public class DirectoryServiceImpl implements DirectoryService {
             }
             temp1.setDirectoryList(temp2);
             saveDirectoryOfPath(rootDirectory, directoryList, temp1);
-        }else{
+        } else {
             List<Directory> temp3 = rootDirectory.getDirectoryList();
-            for(Directory n : temp3){
-                if(n.getId().equals(id)){
+            for (Directory n : temp3) {
+                if (n.getId().equals(id)) {
                     delete = n;
                     temp3.remove(n);
                     break;
@@ -452,7 +452,7 @@ public class DirectoryServiceImpl implements DirectoryService {
             rootDirectory.setDirectoryList(temp3);
         }
 
-        if(null == delete){
+        if (null == delete) {
             throw new EntityNotExistException("文件夹不存在");
         }
         noteIdList = getNoteIdList(delete);
@@ -511,8 +511,8 @@ public class DirectoryServiceImpl implements DirectoryService {
             oldDirectory = directoryList.get(i + 1);
             String oldId = oldDirectory.getId();
             List<Directory> temp2 = fDirectory.getDirectoryList();
-            for(Directory m : temp2){
-                if(m.getId().equals(oldId)) {
+            for (Directory m : temp2) {
+                if (m.getId().equals(oldId)) {
                     temp2.remove(m);
                     break;
                 }
@@ -522,8 +522,8 @@ public class DirectoryServiceImpl implements DirectoryService {
             newVersionOfLast = fDirectory;
         }
         List<Directory> temp1 = rootDirectory.getDirectoryList();
-        for(Directory m : temp1){
-            if(m.getId().equals(directoryList.get(0).getId())) {
+        for (Directory m : temp1) {
+            if (m.getId().equals(directoryList.get(0).getId())) {
                 temp1.remove(m);
                 break;
             }
@@ -532,7 +532,7 @@ public class DirectoryServiceImpl implements DirectoryService {
         rootDirectory.setDirectoryList(temp1);
     }
 
-    List<String> getIdListByPath(String path){
+    List<String> getIdListByPath(String path) {
         List<String> idList = new ArrayList<>(Arrays.asList(path.split("/")));
         idList.remove(0);
         if (idList.size() == 0)
@@ -540,12 +540,12 @@ public class DirectoryServiceImpl implements DirectoryService {
         return idList;
     }
 
-    List<String> getNoteIdList(Directory directory){
+    List<String> getNoteIdList(Directory directory) {
         List<String> noteIdList = new ArrayList<>();
-        for(NoteBook n : directory.getNoteBookList()){
+        for (NoteBook n : directory.getNoteBookList()) {
             noteIdList.addAll(n.getNoteList().stream().map(BriefNote::getId).collect(Collectors.toList()));
         }
-        for(Directory d : directory.getDirectoryList()){
+        for (Directory d : directory.getDirectoryList()) {
             noteIdList.addAll(getNoteIdList(d));
         }
         return noteIdList;
