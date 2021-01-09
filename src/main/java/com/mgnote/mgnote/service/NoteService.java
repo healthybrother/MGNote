@@ -41,11 +41,11 @@ public interface NoteService {
 
     /**
      * 更新note，不允许通过此方法添加subNote
-     * @param noteBook 笔记本id
+     * @param path 笔记本路径
      * @param noteId 将要更新的noteId
      * @param note 更新的note
      */
-    void updateNoteById(String noteBook, String noteId, Note note);
+    void updateNoteById(String path, String noteId, Note note);
 
     /**
      * 根据noteId和subNoteId更新subNote,不允许通过此方法添加subNote
@@ -89,4 +89,6 @@ public interface NoteService {
     Page<Note> searchNotes(Note note, ListParam listParam);
 
     Page<Note> search(String keyword, ListParam listParam);
+
+    void updateNoteUpdateTime(String path);
 }

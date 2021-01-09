@@ -14,8 +14,6 @@ public class SubNote{
     private String id;
     private String name;
     private String content;
-    private Date createTime;
-    private Date updateTime;
     private boolean del;
     @Indexed(name = "path")
     private String path;
@@ -28,11 +26,8 @@ public class SubNote{
     static {
         newSubNote = new SubNote();
         newSubNote.setDel(false);
-        newSubNote.setCreateTime(new Date());
-        newSubNote.setUpdateTime(new Date());
 
         updateSubNote = new SubNote();
-        updateSubNote.setUpdateTime(new Date());
         updateSubNote.setDel(false);
     }
 
@@ -43,12 +38,10 @@ public class SubNote{
     public SubNote() {
     }
 
-    public SubNote(String id, String name, String content, Date createTime, Date updateTime, boolean del, String note, String userId) {
+    public SubNote(String id, String name, String content, boolean del, String note, String userId) {
         this.id = id;
         this.name = name;
         this.content = content;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
         this.del = del;
         this.note = note;
         this.userId = userId;
@@ -76,22 +69,6 @@ public class SubNote{
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
     }
 
     public boolean isDel() {
@@ -132,8 +109,6 @@ public class SubNote{
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", content='" + content + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 ", del=" + del +
                 ", note='" + note + '\'' +
                 '}';

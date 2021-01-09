@@ -19,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -85,6 +83,8 @@ public class UserServiceImpl implements UserService {
         RootDirectory root = new RootDirectory();
         root.setUserId(id);
         root.setId(UUID.randomUUID().toString());
+        root.setDirectoryList(new ArrayList<>());
+        root.setNoteBookList(new ArrayList<>());
         directoryRepository.save(root);
         return id;
     }

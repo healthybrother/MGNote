@@ -6,6 +6,7 @@ import com.mgnote.mgnote.model.*;
 import com.mgnote.mgnote.model.dto.BriefNote;
 import com.mgnote.mgnote.model.dto.ListParam;
 import com.mgnote.mgnote.repository.*;
+import com.mgnote.mgnote.service.DirectoryService;
 import com.mgnote.mgnote.service.NoteService;
 import com.mgnote.mgnote.util.EntityUtil;
 import com.mgnote.mgnote.util.ExampleUtil;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,13 +28,13 @@ public class NoteServiceImpl implements NoteService {
     private final Logger log = LoggerFactory.getLogger(NoteServiceImpl.class);
     private NoteRepository noteRepository;
     private SubNoteRepository subNoteRepository;
-    private NoteBookRepository noteBookRepository;
+    private DirectoryService directoryService;
 
     @Autowired
-    public NoteServiceImpl(NoteRepository noteRepository, SubNoteRepository subNoteRepository, NoteBookRepository noteBookRepository){
+    public NoteServiceImpl(NoteRepository noteRepository, SubNoteRepository subNoteRepository, DirectoryService directoryService){
         this.noteRepository = noteRepository;
         this.subNoteRepository = subNoteRepository;
-        this.noteBookRepository = noteBookRepository;
+        this.directoryService = directoryService;
     }
 
     @Override
@@ -59,8 +61,7 @@ public class NoteServiceImpl implements NoteService {
     public List<SubNote> getSubNoteListByNoteId(String noteId) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
         String regex = "/"+noteId+"/";
-        List<SubNote> list = subNoteRepository.findAllByPathRegex(regex);
-        return list;
+        return subNoteRepository.findAllByPathRegex(regex);
     }
 
     @Override
@@ -72,16 +73,19 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void updateNoteById(String noteBook, String noteId, Note note) {
+    public void updateNoteById(String path, String noteId, Note note) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
         Preconditions.checkNotNull(note, "未输入笔记信息");
         Optional<Note> opt = noteRepository.findById(noteId);
         if(opt.isPresent() && !opt.get().getDel()){
             Note note1 = opt.get();
-            if(note.getName()!=null && note1.getName().equals(note.getName())) updateNameInNoteBook(noteBook, noteId, note.getName());
-            note = EntityUtil.copyProperties(Note.getUpdateNote(), note, false);
+            if(note.getName()!=null && note1.getName().equals(note.getName())) {
+                directoryService.updateNoteInfo(path, new BriefNote(noteId, note.getName()));
+            }
+            EntityUtil.copyProperties(Note.getUpdateNote(), note, false);
             note.setDel(false);
             note.setId(noteId);
+            note.setUpdateTime(new Date(System.currentTimeMillis()));
             Note after = EntityUtil.copyProperties(note, note1, true);
             noteRepository.save(after);
         }
@@ -100,6 +104,7 @@ public class NoteServiceImpl implements NoteService {
             subNote.setPath(old.getPath());
             subNote = EntityUtil.copyProperties(subNote, old, true);
             subNoteRepository.save(subNote);
+            updateNoteUpdateTime(subNote.getPath());
         }
         else throw new EntityNotExistException("笔记不存在");
     }
@@ -133,8 +138,7 @@ public class NoteServiceImpl implements NoteService {
         Preconditions.checkNotNull(pattern, "未输入匹配笔记");
         Preconditions.checkNotNull(listParam, "未输入分页信息");
         Example<SubNote> example = ExampleUtil.getSubNoteExample(pattern);
-        Page<SubNote> page = subNoteRepository.findAll(example, ListUtil.getPageableByListParam(listParam));
-        return page;
+        return subNoteRepository.findAll(example, ListUtil.getPageableByListParam(listParam));
     }
 
     @Override
@@ -164,19 +168,15 @@ public class NoteServiceImpl implements NoteService {
         return null;
     }
 
-    private void updateNameInNoteBook(String notebookId, String noteId, String name){
-        Preconditions.checkNotNull(notebookId, "未输入笔记本id");
-        Optional<NoteBook> opt = noteBookRepository.findById(notebookId);
-        if(opt.isPresent()){
-            List<BriefNote> briefNotes = opt.get().getNoteIdList();
-            for(BriefNote briefNote:briefNotes){
-                if(briefNote.getId().equals(noteId)){
-                    briefNote.setName(name);
-                    break;
-                }
-            }
-            noteBookRepository.save(opt.get());
+    @Override
+    public void updateNoteUpdateTime(String path) {
+        String[] idList = path.split("/");
+        Optional<Note> opt = noteRepository.findById(idList[1]);
+        if(opt.isPresent() && !opt.get().getDel()){
+            Note note = opt.get();
+            note.setUpdateTime(new Date(System.currentTimeMillis()));
+            noteRepository.save(note);
         }
-        else throw new EntityNotExistException("笔记本不存在");
+        throw new EntityNotExistException("笔记不存在(更新笔记时间时出错)");
     }
 }

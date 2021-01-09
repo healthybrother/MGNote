@@ -9,18 +9,18 @@ import java.util.List;
 public class RootDirectory{
     @Id
     private String id;
-    private String name;
-    private boolean del;
     private String userId;
+    private List<Directory> directoryList;
+    private List<NoteBook> noteBookList;
 
     public RootDirectory() {
     }
 
-    public RootDirectory(String id, String name, boolean del, String userId) {
+    public RootDirectory(String id, String userId, List<Directory> directoryList, List<NoteBook> noteBookList) {
         this.id = id;
-        this.name = name;
-        this.del = del;
         this.userId = userId;
+        this.directoryList = directoryList;
+        this.noteBookList = noteBookList;
     }
 
     public String getId() {
@@ -31,22 +31,6 @@ public class RootDirectory{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isDel() {
-        return del;
-    }
-
-    public void setDel(boolean del) {
-        this.del = del;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -55,13 +39,29 @@ public class RootDirectory{
         this.userId = userId;
     }
 
+    public List<Directory> getDirectoryList() {
+        return directoryList;
+    }
+
+    public void setDirectoryList(List<Directory> directoryList) {
+        this.directoryList = directoryList;
+    }
+
+    public List<NoteBook> getNoteBookList() {
+        return noteBookList;
+    }
+
+    public void setNoteBookList(List<NoteBook> noteBookList) {
+        this.noteBookList = noteBookList;
+    }
+
     @Override
     public String toString() {
         return "RootDirectory{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", del=" + del +
                 ", userId='" + userId + '\'' +
+                ", directoryList=" + directoryList +
+                ", noteBookList=" + noteBookList +
                 '}';
     }
 }

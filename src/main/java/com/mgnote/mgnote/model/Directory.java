@@ -3,23 +3,23 @@ package com.mgnote.mgnote.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
-@Document(collection = "directory")
 public class Directory{
-    @Id
     private String id;
     private String name;
-    private boolean del;
-    private String path;
+    private List<Directory> directoryList;
+    private List<NoteBook> noteBookList;
 
-    public Directory(){}
+    public Directory() {
+    }
 
-    public Directory(String id, String name, boolean del, String path) {
+    public Directory(String id, String name, List<Directory> directoryList, List<NoteBook> noteBookList) {
         this.id = id;
         this.name = name;
-        this.del = del;
-        this.path = path;
+        this.directoryList = directoryList;
+        this.noteBookList = noteBookList;
     }
 
     public String getId() {
@@ -38,20 +38,20 @@ public class Directory{
         this.name = name;
     }
 
-    public boolean isDel() {
-        return del;
+    public List<Directory> getDirectoryList() {
+        return directoryList;
     }
 
-    public void setDel(boolean del) {
-        this.del = del;
+    public void setDirectoryList(List<Directory> directoryList) {
+        this.directoryList = directoryList;
     }
 
-    public String getPath() {
-        return path;
+    public List<NoteBook> getNoteBookList() {
+        return noteBookList;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setNoteBookList(List<NoteBook> noteBookList) {
+        this.noteBookList = noteBookList;
     }
 
     @Override
@@ -59,8 +59,8 @@ public class Directory{
         return "Directory{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", del=" + del +
-                ", path='" + path + '\'' +
+                ", directoryList=" + directoryList +
+                ", noteBookList=" + noteBookList +
                 '}';
     }
 }
