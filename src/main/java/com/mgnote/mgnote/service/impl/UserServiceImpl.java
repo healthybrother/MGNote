@@ -79,12 +79,13 @@ public class UserServiceImpl implements UserService {
         String id = UUID.randomUUID().toString();
         user.setId(id);
         EntityUtil.copyProperties(new User(), user, true);
-        userRepository.save(user);
         RootDirectory root = new RootDirectory();
         root.setUserId(id);
         root.setId(UUID.randomUUID().toString());
         root.setDirectoryList(new ArrayList<>());
         root.setNoteBookList(new ArrayList<>());
+        user.setDirectoryId(root.getId());
+        userRepository.save(user);
         directoryRepository.save(root);
         return id;
     }

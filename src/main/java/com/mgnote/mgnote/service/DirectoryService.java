@@ -16,9 +16,9 @@ public interface DirectoryService {
      * 在指定位置添加note
      * @param path 路径,内容为id,用'/'分隔,首位为'/',第一个id为根文件夹id
      * @param note 添加的note
-     * @return 新添加note的id
+     * @return 新添加note的briefNote
      */
-    String addNote(String path, Note note);
+    BriefNote addNote(String path, Note note);
 
     /**
      * 在指定位置添加noteBook

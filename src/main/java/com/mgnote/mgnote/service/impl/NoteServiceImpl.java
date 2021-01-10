@@ -112,6 +112,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void deleteNote(String noteId) {
         Preconditions.checkNotNull(noteId, "未输入笔记id");
+        Note delete = getNoteById(noteId);
         noteRepository.deleteById(noteId);
     }
 
@@ -124,6 +125,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void deleteSubNote(String subNoteId) {
         Preconditions.checkNotNull(subNoteId, "未输入笔记id");
+
         subNoteRepository.deleteById(subNoteId);
     }
 

@@ -7,41 +7,40 @@ import com.mgnote.mgnote.model.*;
 import com.mgnote.mgnote.model.dto.BriefNote;
 import com.mgnote.mgnote.repository.DirectoryRepository;
 import com.mgnote.mgnote.repository.NoteRepository;
-import com.mgnote.mgnote.repository.SubNoteRepository;
 import com.mgnote.mgnote.repository.UserRepository;
 import com.mgnote.mgnote.service.DirectoryService;
-import com.mgnote.mgnote.service.NoteService;
 import com.mgnote.mgnote.util.EntityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.ParameterOutOfBoundsException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class DirectoryServiceImpl implements DirectoryService {
 
     private final Logger log = LoggerFactory.getLogger(DirectoryServiceImpl.class);
-    private NoteRepository noteRepository;
-    private DirectoryRepository directoryRepository;
-    private UserRepository userRepository;
-    private NoteService noteService;
+    private final NoteRepository noteRepository;
+    private final DirectoryRepository directoryRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public DirectoryServiceImpl(NoteService noteService, NoteRepository noteRepository, UserRepository userRepository, DirectoryRepository directoryRepository) {
+    public DirectoryServiceImpl(NoteRepository noteRepository, UserRepository userRepository, DirectoryRepository directoryRepository) {
         this.userRepository = userRepository;
         this.noteRepository = noteRepository;
         this.directoryRepository = directoryRepository;
-        this.noteService = noteService;
     }
 
     @Override
-    public String addNote(String path, Note note) {
+    public BriefNote addNote(String path, Note note) {
         Preconditions.checkNotNull(path, "无路径信息");
         Preconditions.checkNotNull(note, "note为空");
+
+        if(path.charAt(0) != '/')
+            throw new PermissionException("路径非法");
 
         List<String> idList = new ArrayList<>(Arrays.asList(path.split("/")));
         idList.remove(0);
@@ -95,7 +94,7 @@ public class DirectoryServiceImpl implements DirectoryService {
         noteRepository.save(after);
         directoryRepository.save(rootDirectory);
 
-        return after.getId();
+        return new BriefNote(after.getId(), after.getName());
     }
 
     @Override
@@ -410,7 +409,7 @@ public class DirectoryServiceImpl implements DirectoryService {
         if (null == delete)
             throw new EntityNotExistException("笔记本不存在");
 
-        noteService.deleteNoteBatch(noteIdList);
+        noteRepository.deleteAllByIdIn(noteIdList);
         directoryRepository.save(rootDirectory);
     }
 
@@ -457,7 +456,7 @@ public class DirectoryServiceImpl implements DirectoryService {
         }
         noteIdList = getNoteIdList(delete);
 
-        noteService.deleteNoteBatch(noteIdList);
+        noteRepository.deleteAllByIdIn(noteIdList);
         directoryRepository.save(rootDirectory);
     }
 
@@ -533,6 +532,8 @@ public class DirectoryServiceImpl implements DirectoryService {
     }
 
     List<String> getIdListByPath(String path) {
+        if(path.charAt(0) != '/')
+            throw new PermissionException("路径非法");
         List<String> idList = new ArrayList<>(Arrays.asList(path.split("/")));
         idList.remove(0);
         if (idList.size() == 0)
