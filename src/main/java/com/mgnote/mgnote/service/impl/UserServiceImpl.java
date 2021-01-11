@@ -17,11 +17,13 @@ import com.mgnote.mgnote.util.HttpUtil;
 import com.mgnote.mgnote.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private DirectoryRepository directoryRepository;

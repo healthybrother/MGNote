@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Api
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {

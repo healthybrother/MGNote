@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class NoteServiceImpl implements NoteService {
     private final Logger log = LoggerFactory.getLogger(NoteServiceImpl.class);
     private NoteRepository noteRepository;

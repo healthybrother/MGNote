@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Api
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/note")
 public class NoteController {
